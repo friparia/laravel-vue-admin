@@ -2,6 +2,7 @@
 namespace Friparia\Admin;
 
 use Illuminate\Database\Eloquent\Model as LaravelModel;
+use Illuminate\Database\Schema\Blueprint;
 
 abstract class Model extends LaravelModel
 {
@@ -10,13 +11,13 @@ abstract class Model extends LaravelModel
     protected $unshowable = [];
     protected $uncreatable = [];
     protected $uneditable = [];
-    /** @var Fields  */
+
     protected $fields;
 
     public function __construct()
     {
-        $this->fields = new Fields();
         parent::__construct();
+        $this->fields = new Blueprint($this->getTable());
         $this->construct();
     }
 
@@ -30,7 +31,6 @@ abstract class Model extends LaravelModel
 
     /**
      * return all the fields in database
-     * @return Fields
      */
     public  function getFields()
     {

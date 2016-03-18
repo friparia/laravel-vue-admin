@@ -23,6 +23,8 @@ class AdminServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        //
+        $this->commands([
+            MigrateCommand::class
+        ]);
     }
 }

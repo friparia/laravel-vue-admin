@@ -2,6 +2,7 @@
 
 namespace Friparia\Admin;
 
+use DB;
 
 class Migrate
 {
@@ -24,9 +25,10 @@ class Migrate
      */
     public function migrate()
     {
-        $table = "test_table";
-        foreach ($this->model->getFields() as $field) {
-        }
+        $connection = DB::connection();
+        $this->model->getFields()->create();
+        $connection->useDefaultSchemaGrammar();
+        $this->model->getFields()->build($connection, $connection->getSchemaGrammar());
     }
 
 
