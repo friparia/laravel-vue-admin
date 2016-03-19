@@ -29,6 +29,7 @@ class Migrate
         $this->model->getFields()->create();
         $connection->useDefaultSchemaGrammar();
         $this->model->getFields()->build($connection, $connection->getSchemaGrammar());
+
     }
 
 

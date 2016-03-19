@@ -2,7 +2,6 @@
 namespace Friparia\Admin;
 
 use Illuminate\Database\Eloquent\Model as LaravelModel;
-use Illuminate\Database\Schema\Blueprint;
 
 abstract class Model extends LaravelModel
 {
@@ -19,6 +18,9 @@ abstract class Model extends LaravelModel
         parent::__construct();
         $this->fields = new Blueprint($this->getTable());
         $this->construct();
+        $this->fields->increments($this->primaryKey);
+
+        // $this->test2 = 
     }
 
     protected function construct()
@@ -32,7 +34,7 @@ abstract class Model extends LaravelModel
     /**
      * return all the fields in database
      */
-    public  function getFields()
+    public function getFields()
     {
         return $this->fields;
     }
@@ -76,6 +78,17 @@ abstract class Model extends LaravelModel
     public function canEditColumn($column){}
 
     static public function search($q){}
+
+
+    public function newFromBuilder($attributes = [], $connection = null){
+        $model = parent::newFromBuilder($attributes, $connection);
+        foreach($this->fields->getCustomRelations() as $key => $relation){
+            if($relation['type'] == 'belongsTo'){
+                $model->{$relation['related']} = $model->belongsTo($key, $relation['foreign_key'], 'id', $relation['related'])->getResults();
+            }
+        }
+        return $model;
+    }
 
 
 }
