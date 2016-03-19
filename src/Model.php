@@ -11,11 +11,15 @@ abstract class Model extends LaravelModel
     protected $uncreatable = [];
     protected $uneditable = [];
 
-    protected $fields;
+    protected $guarded = [];
 
-    public function __construct()
+    public $timestamps = false;
+    protected $fields;
+    protected $actions;
+
+    public function __construct($attributes = [])
     {
-        parent::__construct();
+        parent::__construct($attributes);
         $this->fields = new Blueprint($this->getTable());
         $this->construct();
         $this->fields->increments($this->primaryKey);
@@ -29,6 +33,7 @@ abstract class Model extends LaravelModel
         //$this->fields->append((new Field())->string(''))
         //$this->fields->append((new CharField())->description())
     }
+
 
 
     /**
@@ -51,9 +56,9 @@ abstract class Model extends LaravelModel
 
     public function getShowableColumns(){}
 
-    public function getCreatableColumns(){}
-
-    public function getEditableColumns(){}
+    public function getEditableColumns(){
+        return ['test', 'fuck', 'test2_id'];
+    }
 
     public function getValue($name){}
 
@@ -61,7 +66,9 @@ abstract class Model extends LaravelModel
         return $this->$name;
     }
 
-    public function getAllActions(){}
+    public function getAllActions(){
+        return ['create', 'update', 'delete'];
+    }
 
     public function getEachActions(){}
 
@@ -79,15 +86,36 @@ abstract class Model extends LaravelModel
 
     static public function search($q){}
 
+    public function getRules(){
+        return [
+        ];
+    }
+
+    public function getValidatorMessages(){
+        return [];
+    }
+
 
     public function newFromBuilder($attributes = [], $connection = null){
         $model = parent::newFromBuilder($attributes, $connection);
-        foreach($this->fields->getCustomRelations() as $key => $relation){
-            if($relation['type'] == 'belongsTo'){
-                $model->{$relation['related']} = $model->belongsTo($key, $relation['foreign_key'], 'id', $relation['related'])->getResults();
+        foreach($this->fields->getCustomRelations() as $key => $customRelation){
+            if($customRelation['type'] == 'belongsTo'){
+                $relation = $model->belongsTo($key, $customRelation['foreign_key'], 'id', $customRelation['related']);
+                $model->{$customRelation['related']} = $relation->getResults();
+                $model->setRelation($customRelation['related'], $relation);
             }
         }
         return $model;
+    }
+
+
+    public function getDirty(){
+        $dirty = parent::getDirty();
+        foreach(array_keys($this->relations) as $relation){
+            unset($dirty[$relation]);
+        }
+
+        return $dirty;
     }
 
 
