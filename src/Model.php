@@ -87,8 +87,7 @@ abstract class Model extends LaravelModel
     static public function search($q){}
 
     public function getRules(){
-        return [
-        ];
+        return [];
     }
 
     public function getValidatorMessages(){
