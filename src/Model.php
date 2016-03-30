@@ -97,11 +97,15 @@ abstract class Model extends LaravelModel
 
     public function newFromBuilder($attributes = [], $connection = null){
         $model = parent::newFromBuilder($attributes, $connection);
-        foreach($this->fields->getCustomRelations() as $key => $customRelation){
-            if($customRelation['type'] == 'belongsTo'){
+        foreach($this->fields->getCustomRelations() as $key => $customRelation) {
+            if ($customRelation['type'] == 'belongsTo') {
                 $relation = $model->belongsTo($key, $customRelation['foreign_key'], 'id', $customRelation['related']);
                 $model->{$customRelation['related']} = $relation->getResults();
                 $model->setRelation($customRelation['related'], $relation);
+            }
+            if ($customRelation['type'] == 'hasOne') {
+            }
+            if ($customRelation['type'] == 'hasMany') {
             }
         }
         return $model;

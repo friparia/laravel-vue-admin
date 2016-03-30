@@ -18,15 +18,14 @@ class Blueprint extends LaravelBlueprint
 
     public function hasOne(){
         dd("TODO");
+        $this->custom_relations[$model] = ['type' => 'hasOne', 'foreign_key' => $foreign_key, 'related' => $related];
     }
 
     public function hasMany(){
         dd("TODO");
+        $this->custom_relations[$model] = ['type' => 'hasMany', 'foreign_key' => $foreign_key, 'related' => $related];
     }
 
-    public function belongsToMany(){
-        dd("TODO");
-    }
 
     public function getCustomRelations(){
         return $this->custom_relations;

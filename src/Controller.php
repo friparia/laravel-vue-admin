@@ -7,13 +7,29 @@ use Illuminate\Http\Request;
 use Validator;
 
 
-class Controller extends LaravelController{
+class Controller extends LaravelController
+{
 
 
     protected $model;
 
-    public function index($action, $id = null){
+    public function index($action, $id = null)
+    {
         dd($action, $id);
+    }
+
+    public function admin(Request $request, $action, $id = null)
+    {
+    }
+
+    final public function login(Request $request){
+        return view('admin::login');
+    }
+
+    final public function dologin(Request $request){
+    }
+
+    final public function logout(Request $request){
     }
 
     public function api(Request $request, $action, $id = null){
@@ -22,6 +38,13 @@ class Controller extends LaravelController{
             return response()->json(['status' => false, 'msg' => "Item Not Found"]);
         }else{
             $validator = Validator::make($request->all(), $instance->getRules(), $instance->getValidatorMessages());
+            $validator->after(function($validator) use ($instance){
+                foreach ($instance->getCustomValidatorCallback() as $callback) {
+                    if (!$callback()) {
+                        //TODO
+                    }
+                }
+            });
             if($validator->fails()){
                 return response()->json(['status' => false, 'msg' => $validator->errors()]);
             }
