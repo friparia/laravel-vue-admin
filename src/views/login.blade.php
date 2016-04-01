@@ -22,6 +22,9 @@
         .column {
             max-width: 450px;
         }
+        .ui.form .error.message {
+            display: block;
+        }
     </style>
 </head>
 <body>
@@ -49,7 +52,8 @@
                 </div>
                 <button class="ui fluid large teal submit button">登陆</button>
             </div>
-            @if(session('error'))
+
+            @if (session('error'))
             <div class="ui error message">{{ session('error') }}</div>
             @endif
         </form>
