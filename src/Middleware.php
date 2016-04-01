@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: friparia
- * Date: 16/3/29
- * Time: 23:12
- */
 
 namespace Friparia\Admin;
 
@@ -13,16 +7,17 @@ use Auth;
 
 class Middleware
 {
+
     /**
      * @param $request
      * @param Closure $next
      * @return mixed
      */
     public function handle($request, Closure $next){
-        if (!Auth::check()){
-            return redirect()->route('admin.login')
+        if (Auth::check()){
+            return $next($request);
         }
-        return $next($request);
+        return redirect()->route('admin.login')->with('error', '请登录!');
     }
 
 

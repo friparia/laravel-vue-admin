@@ -3,7 +3,6 @@
 namespace Friparia\Admin;
 
 use Illuminate\Console\Command;
-use App\Models;
 
 class MigrateCommand extends Command
 {

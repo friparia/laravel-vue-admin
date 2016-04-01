@@ -3,6 +3,7 @@
 namespace Friparia\Admin;
 
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Routing\Router;
 
 class AdminServiceProvider extends ServiceProvider
 {
@@ -11,8 +12,11 @@ class AdminServiceProvider extends ServiceProvider
      *
      * @return void
      */
-    public function boot()
+    public function boot(Router $router)
     {
+        $router->middlewareGroup('admin', [
+            \Friparia\Admin\Middleware::class,
+        ]);
         $this->loadViewsFrom(__DIR__.'/views', 'admin');
     }
 
@@ -24,7 +28,8 @@ class AdminServiceProvider extends ServiceProvider
     public function register()
     {
         $this->commands([
-            MigrateCommand::class
+            MigrateCommand::class,
+            CreateAdminUserCommand::class
         ]);
     }
 }

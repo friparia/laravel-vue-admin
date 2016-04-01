@@ -7,12 +7,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
 
     <!-- Site Properties -->
-    <title>Login Example - Semantic</title>
+    <title>用户登陆</title>
     <link rel="stylesheet" type="text/css" href="http://10.3.19.157/css/semantic.css">
-    <script src="assets/library/jquery.min.js"></script>
-    <script src="../dist/components/form.js"></script>
-    <script src="../dist/components/transition.js"></script>
-
     <style type="text/css">
         body {
             background-color: #DADADA;
@@ -29,38 +25,36 @@
     </style>
 </head>
 <body>
-
 <div class="ui middle aligned center aligned grid">
     <div class="column">
         <h2 class="ui teal image header">
-            <img src="assets/images/logo.png" class="image">
             <div class="content">
-                Log-in to your account
+                后台管理系统登陆
             </div>
         </h2>
-        <form class="ui large form">
+        <form class="ui large form" method="POST" action="/admin/auth/login">
+            {{ csrf_field() }}
             <div class="ui stacked segment">
                 <div class="field">
                     <div class="ui left icon input">
                         <i class="user icon"></i>
-                        <input type="text" name="email" placeholder="E-mail address">
+                        <input type="text" name="username" placeholder="用户名">
                     </div>
                 </div>
                 <div class="field">
                     <div class="ui left icon input">
                         <i class="lock icon"></i>
-                        <input type="password" name="password" placeholder="Password">
+                        <input type="password" name="password" placeholder="密码">
                     </div>
                 </div>
-                <div class="ui fluid large teal submit button">Login</div>
+                <button class="ui fluid large teal submit button">登陆</button>
             </div>
-
-            <div class="ui error message"></div>
+            @if(session('error'))
+            <div class="ui error message">{{ session('error') }}</div>
+            @endif
         </form>
     </div>
 </div>
-
 </body>
 
-</html>
 
