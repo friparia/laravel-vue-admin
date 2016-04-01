@@ -8,5 +8,7 @@
         }
     ],
     "minimum-stability": "dev",
-    "require": {}
+    "require": {
+        "zizaco/entrust": "5.2.x-dev"
+    }
 }
