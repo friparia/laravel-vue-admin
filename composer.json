@@ -8,7 +8,12 @@
         }
     ],
     "autoload": {
-        "psr-4": {"Friparia\\Admin\\": "src/"}
+        "classmap": [
+            "src/commands"
+        ],
+        "psr-4": {
+            "Friparia\\Admin\\": "src/Admin"
+        }
     },
     "minimum-stability": "dev"
 }
