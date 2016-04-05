@@ -7,6 +7,9 @@
             "email": "friparia@gmail.com"
         }
     ],
+    "autoload": {
+        "psr-4": {"Friparia\\Admin\\": "src/"}
+    },
     "minimum-stability": "dev",
     "require-dev": {
         "zizaco/entrust": "5.2.x-dev"
