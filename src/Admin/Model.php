@@ -34,8 +34,6 @@ abstract class Model extends LaravelModel
         //$this->fields->append((new CharField())->description())
     }
 
-
-
     /**
      * return all the fields in database
      */
@@ -97,15 +95,11 @@ abstract class Model extends LaravelModel
 
     public function newFromBuilder($attributes = [], $connection = null){
         $model = parent::newFromBuilder($attributes, $connection);
-        foreach($this->fields->getCustomRelations() as $key => $customRelation) {
-            if ($customRelation['type'] == 'belongsTo') {
-                $relation = $model->belongsTo($key, $customRelation['foreign_key'], 'id', $customRelation['related']);
-                $model->{$customRelation['related']} = $relation->getResults();
-                $model->setRelation($customRelation['related'], $relation);
-            }
-            if ($customRelation['type'] == 'hasOne') {
-            }
-            if ($customRelation['type'] == 'hasMany') {
+        foreach($this->fields->getRelations() as $key => $relation) {
+            if ($relation['type'] == Relation::MANY_TO_ONE) {
+                $relation = $model->belongsTo($relation['related'], $relation['foreignKey'], $relation['otherKey']);
+                $model->$key = $relation->getResults();
+                $model->setRelation($key, $relation);
             }
         }
         return $model;

@@ -11,8 +11,9 @@ class Route{
         $name = Str::snake(class_basename($model));
         $classname = ucfirst($name)."Controller";
         LaravelRoute::group(['middleware' => 'web'], function() use ($prefix, $name, $classname) {
-            LaravelRoute::get($prefix.'/auth/login', '\Friparia\Admin\Controller@login')->name('admin.login');
-            LaravelRoute::post($prefix.'/auth/login', '\Friparia\Admin\Controller@dologin')->name('admin.dologin');
+            LaravelRoute::get($prefix.'/auth/login', '\Friparia\Admin\AuthController@login')->name('admin.login');
+            LaravelRoute::post($prefix.'/auth/login', '\Friparia\Admin\AuthController@dologin')->name('admin.dologin');
+            LaravelRoute::get($prefix.'/auth/logout', '\Friparia\Admin\AuthController@logout')->name('admin.logout');
             LaravelRoute::group(['middleware' => ['admin']], function () use ($prefix, $name, $classname) {
                 LaravelRoute::get($prefix . '/', $classname . '@adminIndex');
                 LaravelRoute::get($prefix . '/' . $name . '/{action}/{id?}', $classname . '@admin');

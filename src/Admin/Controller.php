@@ -5,23 +5,12 @@ use Route as LaravelRoute;
 use Illuminate\Routing\Controller as LaravelController;
 use Illuminate\Http\Request;
 use Validator;
-use Auth;
-use Session;
-use Illuminate\Foundation\Auth\ThrottlesLogins;
-use Illuminate\Foundation\Auth\AuthenticatesAndRegistersUsers;
-
 
 class Controller extends LaravelController
 {
 
-    use AuthenticatesAndRegistersUsers, ThrottlesLogins;
 
     protected $model;
-
-    public function __construct()
-    {
-        $this->middleware($this->guestMiddleware(), ['except' => 'logout']);
-    }
 
     public function index($action, $id = null)
     {
@@ -32,25 +21,7 @@ class Controller extends LaravelController
     {
     }
 
-    public function login(Request $request){
-        return view('admin::login');
-    }
-
     public function adminIndex(Request $request){
-    }
-
-
-    public function dologin(Request $request)
-    {
-        $name = $request->input('username');
-        $password = $request->input('password');
-        if (Auth::attempt(['name' => $name, 'password' => $password])) {
-            return redirect("/admin/");
-        }
-        return redirect("/admin/auth/login")->withInput()->with('error', "用户名或密码错误");
-    }
-
-    final public function logout(Request $request){
     }
 
     public function api(Request $request, $action, $id = null){
@@ -118,7 +89,6 @@ class Controller extends LaravelController
         }
         return $instance;
     }
-
 
     public function batch($action){
     }
