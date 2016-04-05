@@ -10,8 +10,5 @@
     "autoload": {
         "psr-4": {"Friparia\\Admin\\": "src/"}
     },
-    "minimum-stability": "dev",
-    "require": {
-        "zizaco/entrust": "5.2.x-dev"
-    }
+    "minimum-stability": "dev"
 }
