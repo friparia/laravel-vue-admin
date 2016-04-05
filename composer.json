@@ -7,7 +7,7 @@
             "email": "friparia@gmail.com"
         }
     ],
-    "minimum-stability": "dev-master",
+    "minimum-stability": "dev",
     "require": {
         "zizaco/entrust": "5.2.x-dev"
     }
