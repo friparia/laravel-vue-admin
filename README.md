@@ -10,7 +10,11 @@ A admin framework of laravel
 First, add a line in the section of `require` in `composer.json` file:
 
     "friparia/admin": "dev-master"
-
-Then, add a line of service provider in `app/config/app.php`:
     
-    "Friparia\Admin\AdminServiceProvider",
+and run `composer install`, or, you can execute the following command:
+    
+    composer require "friparia/admin:dev-master"
+
+Then, add a line of service provider in `config/app.php`:
+    
+    Friparia\Admin\AdminServiceProvider::class,
