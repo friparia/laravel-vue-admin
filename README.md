@@ -1,6 +1,5 @@
 # awesome-admin
 A admin framework of laravel
-# Laravel Routes Management
 
 [中文版README](https://github.com/friparia/awesome-admin/blob/master/README.chs.md)
 
