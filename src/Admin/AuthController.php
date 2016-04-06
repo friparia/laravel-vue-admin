@@ -16,7 +16,7 @@ class AuthController extends LaravelController{
 
     public function dologin(Request $request)
     {
-        $name = $request->input('username');
+        $name = $request->input('name');
         $password = $request->input('password');
         if (Auth::attempt(['name' => $name, 'password' => $password])) {
             return redirect("/admin/");

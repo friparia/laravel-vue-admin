@@ -43,16 +43,6 @@ class MigrateCommand extends Command
                     $className = $namespace."\\".$class;
                     $instance = new $className;
                     if($instance instanceof Model){
-                        foreach($instance->getManyToManyRelation() as $relation){
-                            $blueprint = new Blueprint($relation['table']);
-                            $blueprint->increments("id");
-                            $blueprint->integer($relation['foreignKey']);
-                            $blueprint->integer($relation['otherKey']);
-                            $blueprint->create();
-                            $connection = DB::connection();
-                            $connection->useDefaultSchemaGrammar();
-                            $blueprint->build($connection, $connection->getSchemaGrammar());
-                        }
                         $fields[$instance->getTable()] = $instance->getFields();
                         $migrate = new Migrate($className);
                         $migrate->migrate();

@@ -30,7 +30,8 @@ class AdminServiceProvider extends ServiceProvider
     {
         $this->commands([
             MigrateCommand::class,
-            CreateAdminUserCommand::class
+            CreateAdminUserCommand::class,
+            SetupCommand::class,
         ]);
     }
 }
