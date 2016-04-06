@@ -77,7 +77,7 @@ abstract class Model extends LaravelModel
     }
 
     public function getAllActions(){
-        return ['create', 'update', 'delete'];
+        return array_merge(['create', 'update', 'delete'], array_keys($this->actions));
     }
 
     public function getEachActions(){}
@@ -101,6 +101,10 @@ abstract class Model extends LaravelModel
     }
 
     public function getValidatorMessages(){
+        return [];
+    }
+
+    public function getCustomValidatorCallback(){
         return [];
     }
 

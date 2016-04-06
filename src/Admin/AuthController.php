@@ -5,6 +5,7 @@ use Illuminate\Routing\Controller as LaravelController;
 use Illuminate\Foundation\Auth\ThrottlesLogins;
 use Illuminate\Foundation\Auth\AuthenticatesAndRegistersUsers;
 use Auth;
+use Illuminate\Http\Request;
 
 class AuthController extends LaravelController{
     use AuthenticatesAndRegistersUsers, ThrottlesLogins;

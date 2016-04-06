@@ -55,8 +55,8 @@ class Controller extends LaravelController
             if($action == 'create'){
                 $result = ['status' => true, 'item' => $instance->$action($attributes)];
             }else{
-                if($instance->$action()){
-                    $result = ['status' => true];
+                if($return = $instance->$action()){
+                    $result = array_merge(['status' => true], $return);
                 }
             }
 
