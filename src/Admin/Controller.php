@@ -19,9 +19,19 @@ class Controller extends LaravelController
 
     public function admin(Request $request, $action, $id = null)
     {
+        dd(0);
     }
 
-    public function adminIndex(Request $request){
+    public function adminList(Request $request)
+    {
+        dd(0);
+    }
+
+    public function adminShow(Request $request, $action)
+    {
+    }
+
+    public function dashboard(Request $request){
     }
 
     public function api(Request $request, $action, $id = null){

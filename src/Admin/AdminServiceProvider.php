@@ -35,6 +35,7 @@ class AdminServiceProvider extends ServiceProvider
             MigrateCommand::class,
             CreateAdminUserCommand::class,
             SetupCommand::class,
+            MenuCommand::class,
         ]);
     }
 }
