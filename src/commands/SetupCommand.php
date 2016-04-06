@@ -23,6 +23,8 @@ class SetupCommand extends Command
         $migrate->migrate();
         $migrate = new Migrate("Friparia\\Admin\\Models\\Permission");
         $migrate->migrate();
+        $migrate = new Migrate("Friparia\\Admin\\Models\\Menu");
+        $migrate->migrate();
         $this->line("create success!");
 
     }

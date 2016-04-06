@@ -2,11 +2,14 @@
 
 namespace Friparia\Admin\Models;
 
-use Illuminate\Foundation\Auth\User as Authenticatable;
+use Friparia\Admin\Model;
+use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
+use Illuminate\Auth\Authenticatable;
 
-class User extends Authenticatable
+class User extends Model implements AuthenticatableContract
 {
-    protected construct(){
+    use Authenticatable;
+    protected function construct(){
         $this->fields->string('name');
         $this->fields->string('email')->unique();
         $this->fields->string('password');

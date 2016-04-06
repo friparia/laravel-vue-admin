@@ -54,6 +54,7 @@ class Relation extends Fluent
         return $this;
     }
 
+    //'App\Comment', 'foreign_key', 'local_key'
     public function hasMany($parent, $foreignKey = "", $localKey = ""){
         $this->related = $parent;
         if($foreignKey == ""){
@@ -68,12 +69,12 @@ class Relation extends Fluent
         return $this;
     }
 
+    //'App\Role', 'role_user', 'user_id', 'role_id'
     public function belongsToMany($related, $table = "", $foreignKey = "", $otherKey = ""){
         $this->related = $related;
-        $related = Str::snake(class_basename($related));
         $this->table = $this->getJoinTable($table);
         if($foreignKey == ""){
-            $foreignKey = $this->name . "_id";
+            $foreignKey = Str::singular($this->blueprint->getTable()) . "_id";
         }
         if($otherKey == ""){
             $otherKey = $related . "_id";
@@ -84,15 +85,15 @@ class Relation extends Fluent
         return $this;
     }
 
+    //'App\Role', 'role_user', 'user_id', 'role_id'
     public function hasManyToMany($related, $table = "", $foreignKey = "", $otherKey = ""){
         $this->related = $related;
-        $related = Str::snake(class_basename($related));
         $this->table = $this->getJoinTable($table);
         if($foreignKey == ""){
-            $foreignKey = $this->name . "_id";
+            $foreignKey = Str::singular($this->blueprint->getTable()) . "_id";
         }
         if($otherKey == ""){
-            $otherKey = $related . "_id";
+            $otherKey = $this->name . "_id";
         }
         $this->foreignKey = $foreignKey;
         $this->otherKey = $otherKey;
@@ -102,7 +103,7 @@ class Relation extends Fluent
 
     protected function getJoinTable($table = ""){
         if($table == ""){
-            $arr = [$related, $this->name];
+            $arr = [Str::singular($this->blueprint->getTable()), $this->name];
             sort($arr);
             $table = implode("_", $arr);
         }
