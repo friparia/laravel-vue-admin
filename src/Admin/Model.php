@@ -44,6 +44,18 @@ abstract class Model extends LaravelModel
 
     public function getRelations()
     {
+        return $this->fields->getRelations();
+    }
+
+
+    public function getManyToManyRelation(){
+        $relations = [];
+        foreach($this->getRelations() as $relation){
+            if($relation['type'] == Relation::MANY_TO_MANY){
+                $relations[] = $relation;
+            }
+        }
+        return $relations;
     }
 
     public function getColumns()
@@ -98,6 +110,11 @@ abstract class Model extends LaravelModel
         foreach($this->fields->getRelations() as $key => $relation) {
             if ($relation['type'] == Relation::MANY_TO_ONE) {
                 $relation = $model->belongsTo($relation['related'], $relation['foreignKey'], $relation['otherKey']);
+                $model->$key = $relation->getResults();
+                $model->setRelation($key, $relation);
+            }
+            if ($relation['type'] == Relation::MANY_TO_MANY) {
+                $relation = $model->belongsToMany($relation['related'], $relation['table'], $relation['foreignKey'], $relation['otherKey']);
                 $model->$key = $relation->getResults();
                 $model->setRelation($key, $relation);
             }
