@@ -28,6 +28,9 @@ class AdminServiceProvider extends ServiceProvider
      */
     public function register()
     {
+        $config = $this->app['config']['auth'];
+        $config["providers"]['users']['model'] = "\\Friparia\\Admin\\Models\\User";
+        $this->app['config']->set('auth', $config);
         $this->commands([
             MigrateCommand::class,
             CreateAdminUserCommand::class,

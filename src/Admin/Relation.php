@@ -35,7 +35,7 @@ class Relation extends Fluent
         }
         $this->foreignKey = $foreignKey;
         $this->otherKey = $otherKey;
-        $this->type = self::MANY_TO_ONE;
+        $this->type = self::BELONGS_TO;
         $this->blueprint->integer($foreignKey);
         return $this;
     }

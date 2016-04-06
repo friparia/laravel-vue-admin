@@ -116,18 +116,15 @@ abstract class Model extends LaravelModel
                 $relation = $model->belongsTo($relation['related'], $relation['foreignKey'], $relation['otherKey']);
                 $model->$key = $relation->getResults();
                 $model->setRelation($key, $relation);
-            }
-            if ($relation['type'] == Relation::MANY_TO_MANY || $relation['type'] == Relation::BELONGS_TO_MANY) {
+            }else if ($relation['type'] == Relation::MANY_TO_MANY || $relation['type'] == Relation::BELONGS_TO_MANY) {
                 $relation = $model->belongsToMany($relation['related'], $relation['table'], $relation['foreignKey'], $relation['otherKey']);
                 $model->$key = $relation->getResults();
                 $model->setRelation($key, $relation);
-            }
-            if ($relation['type'] == Relation::HAS_MANY){
+            }else if ($relation['type'] == Relation::HAS_MANY){
                 $relation = $model->hasMany($relation['related'], $relation['foreignKey'], $relation['localKey']);
                 $model->$key = $relation->getResults();
                 $model->setRelation($key, $relation);
-            }
-            if ($relation['type'] == Relation::HAS_ONE){
+            }else if ($relation['type'] == Relation::HAS_ONE){
                 $relation = $model->hasOne($relation['related'], $relation['foreignKey'], $relation['localKey']);
                 $model->$key = $relation->getResults();
                 $model->setRelation($key, $relation);
