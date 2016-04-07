@@ -36,7 +36,7 @@ Then, add a line of service provider in `config/app.php`:
 If you want to auto generate the admin control panel or make migrations between different code versions, you need to define your model with exact definations in a specific function named `construct()` like this:
 
 ```php
-use Friparia\Admin\Mode;
+use Friparia\Admin\Model;
 class TestModel extends Model{
     protected function construct(){
         $this->fields->string('name');
@@ -46,19 +46,26 @@ class TestModel extends Model{
 }
 ```
 
-What continued with the variable `$this->fields` is alvailable column types which is as following:
+What continued with the variable `$this->fields` is just the way in the [laravel](https://laravel.com/docs/5.2/migrations#creating-columns)
 
-In addition to the column types listed above, there are several other column "modifiers" which you may use while adding the column. For example, to make the column "nullable", you may use the nullable method:
+What's more, you can use more keywords to describe the information of a field:
 
-```php
-$this->fields->string('name')->nullable();
-```
-
-What's more, you can use `relation` keyword to describe a keyword:
-
+ * relation
 ```php
 $this->fields->relation('role')->hasManyToMany('App\\Role');
 ```
+
+ * description
+```php
+$this->fields->string('name')->description('Name');
+```
+ * validator
+```php
+$this->fields->string('name')->validator('required');
+```
+ * validatorInClass
+
+
 
 ### Route
 #### Api
