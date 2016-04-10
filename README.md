@@ -64,10 +64,84 @@ $this->fields->string('name')->description('Name');
 $this->fields->string('name')->validator('required');
 ```
  * validatorInClass
+```php
+$this->fields->string('name')->validatorInClass('required');
+```
 
-
+After your models has defined, you need to run migration command, use
+    php artisan admin:migrate
+to create tables and fields in the database.
 
 ### Route
+If you want to use some default actions provided by this framework, you need to create controller and define the route. 
+
+If you want to create a route points to a model called "Customer", first of all, you need to create a controller in you controllers directory called "CustomerController", of course, you can name the classname in any words. After creating the class, you need to extend from `Friparia\Admin\Controller` and define which model is this controller is related to, like this:
+
+```php
+namespcae App\Http\Controllers;
+use Friparia\Admin\Controller as BaseController;
+class CustomerController extends BaseController
+{
+    protected $model = "App\\Models\\Customer";
+}
+```
+
+And then, you can define the route:
+
 #### Api
-#### Admin
+
+You can define your api route like this:
+
+    Friparia\Admin\Route::api('App\\Models\\Customer');
+
+So you can have these default actions which returns json data:
+
+ * /api/customer 
+ 
+Show customer list
+
+ * /api/customer/show/1
+ 
+ Show the first customer info
+
+ * /api/customer/create
+ 
+ Create a customer, which you should post the info of the customer.
+
+ * /api/customer/update/1
+ 
+ Update a customer, which you should post the info of the customer.
+
+ * /api/customer/delete/1
+ 
+ Delete a customer.
+
+What's more, route function can have four parameters:
+    Route::api($model, $name, $classname, $prefix)
+but the $name, $classname, $prefix will have the default value, if you like a `/apiv1/user` url which is point to `Customer` Model and `UserController`, you can define like this:
+    Route::api('App\\Models\\Customer', 'user', 'UserController', 'apiv1');
+
 ### Model Actions
+
+If you want to add customized action in a model, you can write that function in your model, and define it like this:
+
+```php
+class Customer extends Friparia\Admin\Model{
+    protected $actions = [
+        'check' => [
+            //some config here
+        ],
+    ];
+    
+    public function check(){
+        $this->is_checked = true;
+        $this->save();
+        return [];
+    }
+}
+```
+
+and we can have a route like this:
+    /api/customer/check/1
+so, we can check this user.
+
