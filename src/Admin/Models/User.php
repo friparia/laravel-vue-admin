@@ -14,6 +14,7 @@ class User extends Model implements AuthenticatableContract
         $this->fields->string('email')->unique();
         $this->fields->string('password');
         $this->fields->timestamps();
+        $this->fields->rememberToken();
         $this->fields->relation('role')->hasManyToMany('Friparia\\Admin\\Models\\Role');
     }
 }

@@ -19,12 +19,12 @@ class Controller extends LaravelController
 
     public function admin(Request $request, $action, $id = null)
     {
-        dd(0);
+        dd('admin');
     }
 
     public function adminList(Request $request)
     {
-        dd(0);
+        return view('admin::list');
     }
 
     public function adminShow(Request $request, $action)

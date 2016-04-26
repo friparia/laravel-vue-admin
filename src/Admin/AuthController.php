@@ -26,6 +26,7 @@ class AuthController extends LaravelController{
 
     public function logout(Request $request){
         Auth::logout();
+        return redirect("/admin/auth/login")->withInput()->with('error', "注销成功！");
     }
 
 
