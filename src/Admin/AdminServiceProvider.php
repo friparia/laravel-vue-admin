@@ -19,6 +19,10 @@ class AdminServiceProvider extends ServiceProvider
             \Friparia\Admin\Middleware::class,
         ]);
         $this->loadViewsFrom(__DIR__.'/../views', 'admin');
+        $this->publishes([
+            __DIR__.'/../views' => resource_path('views/friparia/admin'),
+            __DIR__.'/../../assets' => public_path(''),
+        ]);
     }
 
     /**
@@ -39,3 +43,4 @@ class AdminServiceProvider extends ServiceProvider
         ]);
     }
 }
+
