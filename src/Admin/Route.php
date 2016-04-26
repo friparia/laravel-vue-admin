@@ -19,7 +19,7 @@ class Route{
             LaravelRoute::post($prefix.'/auth/login', '\Friparia\Admin\AuthController@dologin')->name('admin.dologin');
             LaravelRoute::get($prefix.'/auth/logout', '\Friparia\Admin\AuthController@logout')->name('admin.logout');
             LaravelRoute::group(['middleware' => ['admin']], function () use ($prefix, $name, $classname) {
-                LaravelRoute::get($prefix . '/', $classname . '@dashboard');
+                LaravelRoute::get($prefix . '/',  '\Friparia\Admin\AdminController@dashboard');
                 LaravelRoute::get($prefix.'/'.$name, $classname.'@adminList');
                 LaravelRoute::get($prefix.'/'.$name.'/show/{id}' , $classname.'@adminShow');
                 LaravelRoute::get($prefix . '/' . $name . '/{action}/{id?}', $classname . '@admin');

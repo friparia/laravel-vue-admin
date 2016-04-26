@@ -31,8 +31,6 @@ class Controller extends LaravelController
     {
     }
 
-    public function dashboard(Request $request){
-    }
 
     public function api(Request $request, $action, $id = null){
         $instance = $this->initInstance($id);
