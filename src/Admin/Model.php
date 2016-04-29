@@ -11,6 +11,7 @@ abstract class Model extends LaravelModel
     protected $uncreatable = [];
     protected $uneditable = [];
     protected $filterable = [];
+    protected $searchable = [];
 
     protected $guarded = [];
 
@@ -80,6 +81,26 @@ abstract class Model extends LaravelModel
         return $columns;
     }
 
+    public function getFilterableColumns(){
+        $columns = [];
+        foreach($this->getColumns() as $column){
+            if(in_array($column['name'], $this->filterable)){
+                $columns[] = $column;
+            }
+        }
+        return $columns;
+    }
+
+    public function getSearchableColumns(){
+        $columns = [];
+        foreach($this->getColumns() as $column){
+            if(in_array($column['name'], $this->searchable)){
+                $columns[] = $column;
+            }
+        }
+        return $columns;
+    }
+
     public function getShowableColumns(){}
 
     public function getEditableColumns(){
@@ -143,6 +164,21 @@ abstract class Model extends LaravelModel
             }
         }
         return $actions;
+    }
+
+    public function getValueGroups($column){
+        $data = [];
+        foreach(self::all()->groupBy($column) as $key => $item){
+            $data[$key] = $item[0][$column];
+        }
+        return $data;
+    }
+
+    public function canFilterColumn($column){
+        if(in_array($column, $this->filterable)){
+            return true;
+        }
+        return false;
     }
 
     public function canListColumn($column){}

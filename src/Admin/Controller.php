@@ -72,10 +72,15 @@ class Controller extends LaravelController
 
     public function adminList(Request $request)
     {
-        $instance = $this->initInstance();
-        $data = $instance->paginate(20);
+        $data = $instance = $this->initInstance();
+        $query = [];
+        foreach($request->input() as $key => $value){
+            $data = $instance->where($key, 'LIKE', "%".$value."%");
+            $query[$key] = $value;
+        }
+        $data = $data->paginate(20);
         $controller = "\\".get_called_class();
-        return view('admin::list', compact('data', 'instance', 'controller'));
+        return view('admin::list', compact('data', 'instance', 'controller', 'query'));
     }
 
     public function adminShow(Request $request, $action)

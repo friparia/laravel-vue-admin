@@ -4,12 +4,31 @@
     <div class="one wide column">
     </div>
     <div class="fifteen wide column right aligned">
+        <form id="search" action="">
+        @foreach ($instance->getFilterableColumns() as $column)
+        <input type="hidden" name="{{ $column->name }}" value="{{ $query[$column->name] or '' }}">
+        @endforeach
+        @foreach ($instance->getSearchableColumns() as $column)
+        <div class="ui right labeled input">
+            <input type="text" placeholder="查询{{ $column->description }}" name="{{ $column->name }}">
+            <div class="ui basic label">
+                {{ $column->description }}
+            </div>
+        </div>
+        @endforeach
+        @if (count($instance->getSearchableColumns())) 
+        <div class="ui button action blue search">
+            <i class="search icon"></i>
+            搜索
+        </div>
+        @endif
         @foreach($instance->getSingleActions() as $action => $info)
         <div class="ui button action {{ $action }} {{ $info['color'] or '' }}">
             <i class="{{ $info['icon'] or 'edit' }} icon"></i>
             {{ $info['description'] or $action }}
         </div>
         @endforeach
+        </form>
     </div>
 </div>
 <table class="ui table celled">
@@ -17,7 +36,16 @@
         <tr>
             @foreach($instance->getListableColumns() as $column)
             <th>
+                @if($instance->canFilterColumn($column->name))
+                <select class="ui dropdown filter" name="{{ $column->name }}">
+                    <option value="0">全部{{ $column->description }}</option>
+                    @foreach($instance->getValueGroups($column->name) as $key => $value)
+                    <option value="{{ $key }}">{{ $value }}</option>
+                    @endforeach
+                </select>
+                @else
                 {{ $column->description }}
+                @endif
             </th>
             @endforeach
             <th>
@@ -53,7 +81,7 @@ $(function(){
             Dialog.modal('{{ action($controller."@admin", ["action" => $action]) }}');
         @else
             location.href = '/admin/{{ $info['url'] }}';
-            @endif
+        @endif
     });
     @endforeach
     @foreach($instance->getEachActions() as $action => $info)
@@ -68,6 +96,14 @@ $(function(){
             @endif
     });
     @endforeach
+    $('.filter').change(function(){
+        $('#search input[name=' + $(this).attr('name') + ']').val($(this).val());
+        $('#search').submit();
+    });
+    $('.search').click(function(){
+        $('#search').submit();
+    });
+
 });
 </script>
 @endsection
