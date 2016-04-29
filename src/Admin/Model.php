@@ -82,7 +82,14 @@ abstract class Model extends LaravelModel
     public function getShowableColumns(){}
 
     public function getEditableColumns(){
-        return ['test', 'fuck', 'test2_id'];
+        $columns = [];
+        foreach($this->getColumns() as $column){
+            $name = $column->name;
+            if(!in_array($name, $this->uneditable) && $name != 'id'){
+                $columns[] = $column;
+            }
+        }
+        return $columns;
     }
 
     public function getValue($name){
@@ -106,6 +113,16 @@ abstract class Model extends LaravelModel
                 }
             }else{
                 $actions[$action] = $value;
+            }
+        }
+        return $actions;
+    }
+
+    public function getModalActions(){
+        $actions = [];
+        foreach($this->actions as $action => $value){
+            if(isset($value['type']) && $value['type'] == "modal"){
+                $actions[] = $action;
             }
         }
         return $actions;

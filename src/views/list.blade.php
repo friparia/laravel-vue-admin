@@ -22,7 +22,7 @@
         @endforeach
         <td>
             @foreach($instance->getEachActions() as $action => $info)
-            <button class="ui basic button action {{ $action }} {{ $info['color'] or ''}}" data-id="{{ $instance->id }}">
+            <button class="ui basic button action {{ $action }} {{ $info['color'] or ''}}" data-id="{{ $item->id }}">
                 <i class="{{ $info['icon'] or 'edit' }} icon"></i>
                 {{ $info['description'] or $action }}
             </button>
@@ -35,10 +35,13 @@
 $(function(){
     @foreach($instance->getEachActions() as $action => $info)
     $('.button.action.{{ $action }}').click(function(){
+        var id = $(this).data('id');
         @if ($info['type'] == 'confirm')
-            Dialog.confirm('确认{{ $info['description'] or $action}}?', 'aaa');
+            Dialog.confirm('确认{{ $info['description'] or $action}}?', '{{ action($controller."@admin", ["action" => $action]) }}/' + id);
         @elseif ($info['type'] == 'modal')
+            Dialog.modal('{{ action($controller."@admin", ["action" => $action]) }}/' + id);
         @else
+            location.href = '/admin/{{ $info['url'] }}';
             @endif
     });
     @endforeach

@@ -19,14 +19,57 @@ class Controller extends LaravelController
 
     public function admin(Request $request, $action, $id = null)
     {
-        dd('admin');
+        $instance = $this->initInstance($id);
+        if(is_null($instance)){
+            $request->session()->flash("error", "结果不存在");
+            return response()->json();
+        }else{
+            $validator = Validator::make($request->all(), $instance->getRules(), $instance->getValidatorMessages());
+            $validator->after(function($validator) use ($instance){
+                foreach ($instance->getCustomValidatorCallback() as $callback) {
+                    if (!$callback()) {
+                        //TODO
+                    }
+                }
+            });
+            if($validator->fails()){
+                $request->session()->flash("error", $validator->errors());
+                return response()->json();
+            }
+            if(!in_array($action, $instance->getAllActions())){
+                $request->session()->flash("error", '方法不存在');
+                return response()->json();
+            }
+
+            if(in_array($action, $instance->getModalActions())){
+                $controller = "\\".get_called_class();
+                return view("admin::".$action)->with('instance', $instance)->with('controller', $controller);;
+            }
+            $attributes = [];
+            foreach($instance->getEditableColumns() as $column){
+                $value = $request->input($column->name);
+                if(!is_null($value)){
+                    $attributes[$column->name] = $value;
+                    $instance->{$column->name} = $value;
+                }
+            }
+            if($action == 'create'){
+                $instance->$action($attributes);
+            }else{
+                $instance->$action();
+            }
+
+        }
+        $request->session()->flash("success", '操作成功');
+        return response()->json();
     }
 
     public function adminList(Request $request)
     {
         $instance = $this->initInstance();
         $data = $instance->paginate(20);
-        return view('admin::list', compact('data', 'instance'));
+        $controller = "\\".get_called_class();
+        return view('admin::list', compact('data', 'instance', 'controller'));
     }
 
     public function adminShow(Request $request, $action)
@@ -56,10 +99,10 @@ class Controller extends LaravelController
 
             $attributes = [];
             foreach($instance->getEditableColumns() as $column){
-                $value = $request->input($column);
+                $value = $request->input($column->name);
                 if(!is_null($value)){
-                    $attributes[$column] = $value;
-                    $instance->$column = $value;
+                    $attributes[$column->name] = $value;
+                    $instance->{$column->name} = $value;
                 }
             }
             if($action == 'create'){
