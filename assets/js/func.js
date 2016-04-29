@@ -1,24 +1,3 @@
-var myMessages = ['info','warning','error','success']; // define the messages types    
-function hideAllMessages()
-{
-    var messagesHeights = new Array(); // this array will store height for each
-
-    for (i=0; i<myMessages.length; i++)
-        {
-            messagesHeights[i] = $('.message.' + myMessages[i]).outerHeight();
-            $('.' + myMessages[i]).remove();
-        }
-}
-
-function showMessage(type, msg){
-    $('.container').prepend('<div class="'+ type +' message"><h3 style="display:inline;">' + msg + '</h3><i class="close icon message-close" style="float:right;"></i></div>');
-    $('.message-close').click(function(){
-        hideAllMessages();
-    });
-    setTimeout(function(){
-        hideAllMessages();
-    },10000);
-}
 
 (function() {
     this.Dialog = (function() {

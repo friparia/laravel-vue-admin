@@ -10,6 +10,7 @@ abstract class Model extends LaravelModel
     protected $unshowable = [];
     protected $uncreatable = [];
     protected $uneditable = [];
+    protected $filterable = [];
 
     protected $guarded = [];
 
@@ -133,7 +134,15 @@ abstract class Model extends LaravelModel
     }
 
     public function getSingleActions(){
-        return [];
+        $actions = [];
+        foreach($this->actions as $action => $value){
+            if(isset($value['single'])){
+                if($value['single']){
+                    $actions[$action] = $value;
+                }
+            }
+        }
+        return $actions;
     }
 
     public function canListColumn($column){}

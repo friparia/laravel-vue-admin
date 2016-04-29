@@ -5,6 +5,7 @@ use Route as LaravelRoute;
 use Illuminate\Routing\Controller as LaravelController;
 use Illuminate\Http\Request;
 use Validator;
+use Illuminate\Support\Str;
 
 class Controller extends LaravelController
 {
@@ -43,7 +44,12 @@ class Controller extends LaravelController
 
             if(in_array($action, $instance->getModalActions())){
                 $controller = "\\".get_called_class();
-                return view("admin::".$action)->with('instance', $instance)->with('controller', $controller);;
+                $model_name = Str::snake(class_basename($this->model));
+                $view = "admin::".$action;
+                if(view()->exists($model_name.".".$action)){
+                    $view = $model_name.".".$action;
+                }
+                return view($view)->with('instance', $instance)->with('controller', $controller);;
             }
             $attributes = [];
             foreach($instance->getEditableColumns() as $column){

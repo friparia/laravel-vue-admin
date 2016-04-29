@@ -11,7 +11,6 @@
     @endif
 </title>
 <link rel="stylesheet" type="text/css" href="{{ asset('css/semantic.css') }}">
-<link rel="stylesheet" type="text/css" href="{{ asset('css/message.css') }}">
 <script type="text/javascript" src="{{ asset('/js/jquery-1.11.2.min.js') }}"></script>
 <script type="text/javascript" src="{{ asset('/js/semantic.min.js') }}"></script>
 <script type="text/javascript" src="{{ asset('/js/jquery.form.js') }}"></script>
@@ -45,13 +44,13 @@
         </div>
         <div class="container" style="flex:1;overflow-y:auto;padding-top:40px;padding-left:30px;padding-right:30px;">
             @if (session('error'))
-            <div class="error message">
-                <h3 style="display:inline;">{{ session('error') }}</h3><i class="close icon message-close" style="float:right;"></i>
+            <div class="ui negative message">
+                <p>{{ session('error') }}</p>
             </div>
             @endif
             @if (session('success'))
-            <div class="success message">
-                <h3 style="display:inline;">{{ session('success') }}</h3><i class="close icon message-close" style="float:right;"></i>
+            <div class="ui success message">
+                <p>{{ session('success') }}</p>
             </div>
             @endif
         <h2 class="ui dividing header">
@@ -71,12 +70,6 @@
 <script>
 $(function(){
     $('.ui.dropdown').dropdown();
-    $('.message-close').click(function(){
-        hideAllMessages();
-    });
-    setTimeout(function(){
-        hideAllMessages();
-    },10000);
 });
 </script>
 </body>

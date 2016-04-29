@@ -1,5 +1,17 @@
 @extends('admin::layout')
 @section('content')
+<div class="ui grid">
+    <div class="one wide column">
+    </div>
+    <div class="fifteen wide column right aligned">
+        @foreach($instance->getSingleActions() as $action => $info)
+        <div class="ui button action {{ $action }} {{ $info['color'] or '' }}">
+            <i class="{{ $info['icon'] or 'edit' }} icon"></i>
+            {{ $info['description'] or $action }}
+        </div>
+        @endforeach
+    </div>
+</div>
 <table class="ui table celled">
     <thead>
         <tr>
@@ -33,6 +45,17 @@
 </table>
 <script>
 $(function(){
+    @foreach($instance->getSingleActions() as $action => $info)
+    $('.button.action.{{ $action }}').click(function(){
+        @if ($info['type'] == 'confirm')
+            Dialog.confirm('确认{{ $info['description'] or $action}}?', '{{ action($controller."@admin", ["action" => $action]) }}' );
+        @elseif ($info['type'] == 'modal')
+            Dialog.modal('{{ action($controller."@admin", ["action" => $action]) }}');
+        @else
+            location.href = '/admin/{{ $info['url'] }}';
+            @endif
+    });
+    @endforeach
     @foreach($instance->getEachActions() as $action => $info)
     $('.button.action.{{ $action }}').click(function(){
         var id = $(this).data('id');
@@ -41,7 +64,7 @@ $(function(){
         @elseif ($info['type'] == 'modal')
             Dialog.modal('{{ action($controller."@admin", ["action" => $action]) }}/' + id);
         @else
-            location.href = '/admin/{{ $info['url'] }}';
+            location.href = '/admin/{{ $info['url'] }}' + id;
             @endif
     });
     @endforeach
