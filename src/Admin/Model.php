@@ -15,6 +15,11 @@ abstract class Model extends LaravelModel
 
     public $timestamps = false;
     protected $fields;
+    //each boolean
+    //color string
+    //icon string
+    //type link/confirm/modal
+    //url string
     protected $actions;
 
     public function __construct($attributes = [])
@@ -60,9 +65,19 @@ abstract class Model extends LaravelModel
 
     public function getColumns()
     {
+        return $this->fields->getColumns();
     }
 
-    public function getListableColumns(){}
+    public function getListableColumns(){
+        $columns = [];
+        $this->unlistable[] = 'id';
+        foreach($this->getColumns() as $column){
+            if(!in_array($column['name'], $this->unlistable)){
+                $columns[] = $column;
+            }
+        }
+        return $columns;
+    }
 
     public function getShowableColumns(){}
 
@@ -70,7 +85,9 @@ abstract class Model extends LaravelModel
         return ['test', 'fuck', 'test2_id'];
     }
 
-    public function getValue($name){}
+    public function getValue($name){
+        return $this->$name;
+    }
 
     public function getRawValue($name){
         return $this->$name;
@@ -80,11 +97,27 @@ abstract class Model extends LaravelModel
         return array_merge(['create', 'update', 'delete'], array_keys($this->actions));
     }
 
-    public function getEachActions(){}
+    public function getEachActions(){
+        $actions = [];
+        foreach($this->actions as $action => $value){
+            if(isset($value['each'])){
+                if($value['each']){
+                    $actions[$action] = $value;
+                }
+            }else{
+                $actions[$action] = $value;
+            }
+        }
+        return $actions;
+    }
 
-    public function getBatchActions(){}
+    public function getBatchActions(){
+        return [];
+    }
 
-    public function getSingleActions(){}
+    public function getSingleActions(){
+        return [];
+    }
 
     public function canListColumn($column){}
 

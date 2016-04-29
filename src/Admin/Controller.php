@@ -24,7 +24,9 @@ class Controller extends LaravelController
 
     public function adminList(Request $request)
     {
-        return view('admin::list');
+        $instance = $this->initInstance();
+        $data = $instance->paginate(20);
+        return view('admin::list', compact('data', 'instance'));
     }
 
     public function adminShow(Request $request, $action)

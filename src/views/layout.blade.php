@@ -1,14 +1,20 @@
 <!DOCTYPE html>
 <html>
 <head>
-<!-- Standard Meta -->
 <meta charset="utf-8" />
 <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-<!-- Site Properties -->
+<title>
+    @hasSection('title')
+    @yield('title')管理 - ProjectName
+    @else
+    ProjectName
+    @endif
+</title>
 <link rel="stylesheet" type="text/css" href="{{ asset('css/semantic.css') }}">
 <script type="text/javascript" src="{{ asset('/js/jquery-1.11.2.min.js') }}"></script>
 <script type="text/javascript" src="{{ asset('/js/semantic.min.js') }}"></script>
+<script type="text/javascript" src="{{ asset('/js/func.js') }}"></script>
 </head>
 <body>
 <div class="" style="height:100%;display:flex;flex-direction:column;">
@@ -26,7 +32,7 @@
             </div>
         </div>
     </div>
-    <div class="content" style="display:flex;flex:1;">
+    <div style="display:flex;flex:1;">
         <div class="left sidebar" style="background-color:#1b1c1d;">
             <div class="ui inverted vertical visible menu" style="border-radius:0;">
                 @foreach (Friparia\Admin\Models\Menu::all() as $menu)
@@ -36,8 +42,17 @@
                 @endforeach
             </div>
         </div>
-        <div class="container" style="flex:1;overflow-y:auto;">
-            @yield('content')
+        <div class="container" style="flex:1;overflow-y:auto;padding-top:40px;padding-left:30px;padding-right:30px;">
+            <h2 class="ui dividing header">
+                @hasSection('title')
+                @yield('title')管理 - ProjectName
+                @else
+                ProjectName
+                @endif
+            </h2>
+            <div class="content">
+                @yield('content')
+            </div>
         </div>
     </div>
     <div class="footer"></div>
