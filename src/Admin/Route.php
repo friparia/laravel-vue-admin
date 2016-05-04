@@ -15,9 +15,6 @@ class Route{
             $classname = ucfirst($name) . "Controller";
         }
         LaravelRoute::group(['middleware' => 'web'], function() use ($prefix, $name, $classname) {
-            LaravelRoute::get($prefix.'/auth/login', '\Friparia\Admin\AuthController@login')->name('admin.login');
-            LaravelRoute::post($prefix.'/auth/login', '\Friparia\Admin\AuthController@dologin')->name('admin.dologin');
-            LaravelRoute::get($prefix.'/auth/logout', '\Friparia\Admin\AuthController@logout')->name('admin.logout');
             LaravelRoute::group(['middleware' => ['admin']], function () use ($prefix, $name, $classname) {
                 LaravelRoute::get($prefix . '/',  '\Friparia\Admin\AdminController@dashboard');
                 LaravelRoute::get($prefix.'/'.$name, $classname.'@adminList');
@@ -25,6 +22,16 @@ class Route{
                 LaravelRoute::get($prefix . '/' . $name . '/{action}/{id?}', $classname . '@admin');
                 LaravelRoute::post($prefix . '/' . $name . '/{action}/{id?}', $classname . '@admin');
             });
+        });
+    }
+
+    public static function init($prefix = 'admin'){
+        Route::admin('Friparia\\Admin\\Models\\User', 'user', '\Friparia\Admin\Controllers\UserController');
+        Route::admin('Friparia\\Admin\\Models\\Role', 'role', '\Friparia\Admin\Controllers\RoleController');
+        LaravelRoute::group(['middleware' => 'web'], function() use ($prefix) {
+            LaravelRoute::get($prefix.'/auth/login', '\Friparia\Admin\AuthController@login')->name('admin.login');
+            LaravelRoute::post($prefix.'/auth/login', '\Friparia\Admin\AuthController@dologin')->name('admin.dologin');
+            LaravelRoute::get($prefix.'/auth/logout', '\Friparia\Admin\AuthController@logout')->name('admin.logout');
         });
     }
 

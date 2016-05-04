@@ -44,7 +44,7 @@
                     @endforeach
                 </select>
                 @else
-                {{ $column->description }}
+                {{ $column->description or $column->name }}
                 @endif
             </th>
             @endforeach

@@ -22,7 +22,7 @@ abstract class Model extends LaravelModel
     //icon string
     //type link/confirm/modal
     //url string
-    protected $actions;
+    protected $actions = [];
 
     public function __construct($attributes = [])
     {
