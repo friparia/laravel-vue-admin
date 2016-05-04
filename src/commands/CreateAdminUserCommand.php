@@ -14,7 +14,7 @@ use Hash;
 
 class CreateAdminUserCommand extends Command
 {
-    protected $signature = "admin:create {name}";
+    protected $signature = "admin:create-superuser {name}";
 
     protected $description = "Create a super admin user account";
 

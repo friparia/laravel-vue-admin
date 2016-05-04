@@ -77,7 +77,7 @@ class Relation extends Fluent
             $foreignKey = Str::singular($this->blueprint->getTable()) . "_id";
         }
         if($otherKey == ""){
-            $otherKey = $related . "_id";
+            $otherKey = Str::singular(class_basename($related)) . "_id";
         }
         $this->foreignKey = $foreignKey;
         $this->otherKey = $otherKey;

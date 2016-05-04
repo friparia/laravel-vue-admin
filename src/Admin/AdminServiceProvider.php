@@ -40,6 +40,7 @@ class AdminServiceProvider extends ServiceProvider
             CreateAdminUserCommand::class,
             SetupCommand::class,
             MenuCommand::class,
+            PermissionCommand::class,
         ]);
     }
 }

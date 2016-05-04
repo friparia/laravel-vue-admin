@@ -75,7 +75,7 @@ class Controller extends LaravelController
         $data = $instance = $this->initInstance();
         $query = [];
         foreach($request->input() as $key => $value){
-            $data = $instance->where($key, 'LIKE', "%".$value."%");
+            $data = $data->where($key, 'LIKE', "%".$value."%");
             $query[$key] = $value;
         }
         $data = $data->paginate(20);
