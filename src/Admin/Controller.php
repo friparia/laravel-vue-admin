@@ -89,6 +89,11 @@ class Controller extends LaravelController
 
 
     public function api(Request $request, $action, $id = null){
+        $function = strtolower($request->method()).ucfirst(camel_case($action));
+        if(method_exists($this, $function){
+            return response()->json($this->$function());
+        }
+        //
         $instance = $this->initInstance($id);
         if(is_null($instance)){
             return response()->json(['status' => false, 'msg' => "Item Not Found"]);
