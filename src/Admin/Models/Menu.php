@@ -15,6 +15,7 @@ class Menu extends Model
     /**
      *
      */
+    public $timestamps = false;
     protected function construct()
     {
         $this->fields->integer('pid');

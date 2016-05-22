@@ -110,5 +110,11 @@ class Relation extends Fluent
         return $table;
     }
 
+
+    public function __call($method, $parameters)
+    {
+        parent::__call($method, $parameters);
+    }
+
 }
 

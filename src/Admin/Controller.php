@@ -55,6 +55,10 @@ class Controller extends LaravelController
             foreach($instance->getEditableColumns() as $column){
                 $value = $request->input($column->name);
                 if(!is_null($value)){
+                    if($value == "true" or $value == "false"){
+                        $value = $value == "true";
+
+                    }
                     $attributes[$column->name] = $value;
                     $instance->{$column->name} = $value;
                 }
@@ -74,8 +78,15 @@ class Controller extends LaravelController
     {
         $data = $instance = $this->initInstance();
         $query = [];
+        $filter = [];
         foreach($request->input() as $key => $value){
-            $data = $data->where($key, 'LIKE', "%".$value."%");
+            if(in_array($key, $instance->getExtended())){
+                if($value != ""){
+                    $data = $instance->filter($key, $value, $data);
+                }
+            }else{
+                $data = $data->where($key, 'LIKE', "%".$value."%");
+            }
             $query[$key] = $value;
         }
         $data = $data->paginate(20);
@@ -90,8 +101,12 @@ class Controller extends LaravelController
 
     public function api(Request $request, $action, $id = null){
         $function = strtolower($request->method()).ucfirst(camel_case($action));
-        if(method_exists($this, $function){
-            return response()->json($this->$function());
+        if(method_exists($this, $function)){
+            if(is_null($id)){
+                return response()->json($this->$function());
+            }else{
+                return response()->json($this->$function($id));
+            }
         }
         //
         $instance = $this->initInstance($id);
@@ -144,7 +159,7 @@ class Controller extends LaravelController
         if(is_null($instance)){
             $result = ['status' => false];
         }else{
-            $result = $instance;
+            $result = ['status' => true, 'item' => $instance];
         }
         return response()->json($result);
     }

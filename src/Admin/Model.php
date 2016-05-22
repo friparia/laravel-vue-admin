@@ -3,6 +3,8 @@ namespace Friparia\Admin;
 
 use Illuminate\Database\Eloquent\Model as LaravelModel;
 
+use Illuminate\Support\Fluent;
+
 abstract class Model extends LaravelModel
 {
     protected $slug;
@@ -12,10 +14,12 @@ abstract class Model extends LaravelModel
     protected $uneditable = [];
     protected $filterable = [];
     protected $searchable = [];
+    protected $switchable = [];
+    protected $extended = [];
 
     protected $guarded = [];
 
-    public $timestamps = false;
+    public $timestamps = true;
     protected $fields;
     //each boolean
     //color string
@@ -36,9 +40,6 @@ abstract class Model extends LaravelModel
 
     protected function construct()
     {
-        //version 1
-        //$this->fields->append((new Field())->string(''))
-        //$this->fields->append((new CharField())->description())
     }
 
     /**
@@ -67,17 +68,41 @@ abstract class Model extends LaravelModel
 
     public function getColumns()
     {
-        return $this->fields->getColumns();
+        $columns =  $this->fields->getColumns();
+        foreach($this->extended as $extended){
+            if(!$description = $this->getColumnDescription($extended)){
+                $description = $extended;
+            }
+            $columns[] = new Fluent([
+                'name' => $extended,
+                'type' => 'extended',
+                'description' => $description
+            ]);
+        }
+        return $columns;
+    }
+
+    public function getColumnDescription($column){
+        return false;
     }
 
     public function getListableColumns(){
         $columns = [];
+
         $this->unlistable[] = 'id';
+
+        foreach($this->getRelations() as $relation){
+            if($relation->type == Relation::BELONGS_TO){
+                $this->unlistable[] = $relation->foreignKey;
+            }
+        }
+
         foreach($this->getColumns() as $column){
             if(!in_array($column['name'], $this->unlistable)){
                 $columns[] = $column;
             }
         }
+
         return $columns;
     }
 
@@ -114,7 +139,19 @@ abstract class Model extends LaravelModel
         return $columns;
     }
 
+    protected function getColumn($name){
+        foreach($this->getColumns() as $column){
+            if($column->get('name') == $name){
+                return $column;
+            }
+        }
+    }
+
     public function getValue($name){
+        $column = $this->getColumn($name);
+        if($column->type == 'enum'){
+            return $column->values[$this->$name];
+        }
         return $this->$name;
     }
 
@@ -168,10 +205,18 @@ abstract class Model extends LaravelModel
 
     public function getValueGroups($column){
         $data = [];
-        foreach(self::all()->groupBy($column) as $key => $item){
-            $data[$key] = $item[0][$column];
+        if(!in_array($column, $this->extended)){
+            foreach(self::all()->groupBy($column) as $key => $item){
+                $data[$key] = $item[0][$column];
+            }
+        }else{
+            $data = $this->getExtendedValueGroups($column);
         }
         return $data;
+    }
+
+    public function getExtendedValueGroups($column){
+        return [];
     }
 
     public function canFilterColumn($column){
@@ -181,6 +226,14 @@ abstract class Model extends LaravelModel
         return false;
     }
 
+    public function getExtended(){
+        return $this->extended;
+    }
+
+    public function filter($key, $value, $data){
+        return $data;
+    }
+
     public function canListColumn($column){}
 
     public function canShowColumn($column){}
@@ -188,6 +241,13 @@ abstract class Model extends LaravelModel
     public function canCreateColumn($column){}
 
     public function canEditColumn($column){}
+
+    public function isSwitchable($column){
+        if(in_array($column, $this->switchable)){
+            return true;
+        }
+        return false;
+    }
 
     static public function search($q){}
 

@@ -57,7 +57,14 @@
     <tr>
         @foreach($instance->getListableColumns() as $column)
         <td>
+            @if($instance->isSwitchable($column->name))
+            <div class="ui toggle checkbox">
+                <input data-id="{{ $item->id }}" class="switch" type="checkbox" name="{{ $column->name }}" @if($item->getValue($column->name)) checked @endif>
+                <label></label>
+            </div>
+            @else
             {{ $item->getValue($column->name) }}
+            @endif
         </td>
         @endforeach
         <td>
@@ -100,10 +107,19 @@ $(function(){
         $('#search input[name=' + $(this).attr('name') + ']').val($(this).val());
         $('#search').submit();
     });
+    $('.switch').change(function(){
+        var id = $(this).data('id');
+        var obj = {};
+        obj[$(this).attr('name')] = $(this).prop('checked');
+        $.post('{{ action($controller."@admin", ["action" => 'update']) }}/' + id, obj, function(){
+            location.reload();
+        });
+
+    });
     $('.search').click(function(){
         $('#search').submit();
     });
-
+    $('.ui.toggle.checkbox').checkbox();
 });
 </script>
 @endsection

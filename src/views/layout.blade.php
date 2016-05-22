@@ -36,7 +36,7 @@
         <div class="left sidebar" style="background-color:#1b1c1d;">
             <div class="ui inverted vertical visible menu" style="border-radius:0;">
                 @foreach (Friparia\Admin\Models\Menu::all() as $menu)
-                <a class="item">
+                <a class="item" href="/admin/{{ $menu->url }}">
                     {{ $menu->name }}
                 </a>
                 @endforeach
