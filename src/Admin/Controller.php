@@ -53,14 +53,17 @@ class Controller extends LaravelController
             }
             $attributes = [];
             foreach($instance->getEditableColumns() as $column){
-                $value = $request->input($column->name);
+                $name = $column->name;
+                if($instance->getExtendedName($name) != ""){
+                    $name = $instance->getExtendedName($name);
+                }
+                $value = $request->input($name);
+                if($column->type == 'boolean'){
+                    $value = $value == "on";
+                }
                 if(!is_null($value)){
-                    if($value == "true" or $value == "false"){
-                        $value = $value == "true";
-
-                    }
-                    $attributes[$column->name] = $value;
-                    $instance->{$column->name} = $value;
+                    $attributes[$name] = $value;
+                    $instance->{$name} = $value;
                 }
             }
             if($action == 'create'){

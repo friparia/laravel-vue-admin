@@ -113,7 +113,7 @@ class Relation extends Fluent
 
     public function __call($method, $parameters)
     {
-        parent::__call($method, $parameters);
+        return parent::__call($method, $parameters);
     }
 
 }

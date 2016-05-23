@@ -66,9 +66,23 @@ abstract class Model extends LaravelModel
         return $relations;
     }
 
+    //need reconstruct
     public function getColumns()
     {
-        $columns =  $this->fields->getColumns();
+        $cols = $this->fields->getColumns();
+        $relatedKey = [];
+        foreach($this->getRelations() as $relation){
+            if($relation->type == Relation::BELONGS_TO){
+                $relatedKey[] = $relation->foreignKey;
+            }
+        }
+        $columns = [];
+        foreach($cols as $column){
+            if(!in_array($column->name, $relatedKey)){
+                $columns[] = $column;
+            }
+        }
+
         foreach($this->extended as $extended){
             if(!$description = $this->getColumnDescription($extended)){
                 $description = $extended;
@@ -91,19 +105,21 @@ abstract class Model extends LaravelModel
 
         $this->unlistable[] = 'id';
 
-        foreach($this->getRelations() as $relation){
-            if($relation->type == Relation::BELONGS_TO){
-                $this->unlistable[] = $relation->foreignKey;
-            }
-        }
 
         foreach($this->getColumns() as $column){
             if(!in_array($column['name'], $this->unlistable)){
                 $columns[] = $column;
             }
         }
-
         return $columns;
+    }
+
+    public function getExtendedType($name){
+        return false;
+    }
+
+    public function getExtendedName($name){
+        return "";
     }
 
     public function getFilterableColumns(){

@@ -8,11 +8,28 @@
         <div class="field">
             <label>{{ $column->description }}</label>
             @if ($column->type == 'boolean')
-            <select class="ui dropdown " name="{{ $column->name }}">
-                <option selected value="1"></option>
+            <div class="ui toggle checkbox">
+                <input data-id="{{ $instance->id }}" type="checkbox" name="{{ $column->name }}">
+                <label></label>
+            </div>
+            @elseif($column->type == 'enum')
+            <select class="ui dropdown" name="{{ $column->name }}">
+                @foreach($column->values as $key => $value)
+                <option value="{{ $key }}">{{ $value }}</option>
+                @endforeach
             </select>
-            @else 
-            <input name="{{ $column->name }}" placeholder="{{ $column->description }}" type="text" value="{{ $instance->getValue($column->name) }}">
+            @elseif($column->type == 'extended')
+            @if(is_array($instance->getExtendedType($column->name)))
+            <select class="ui dropdown" name="{{ $instance->getExtendedName($column->name) }}">
+                @foreach($instance->getExtendedType($column->name) as $key => $value)
+                <option value="{{ $key }}">{{ $value }}</option>
+                @endforeach
+            </select>
+            @else
+//TODO
+            @endif
+            @else
+            <input name="{{ $column->name }}" placeholder="{{ $column->description }}" type="text">
             @endif
         </div>
         @endforeach
