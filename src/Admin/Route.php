@@ -12,7 +12,7 @@ class Route{
             $name = Str::snake(class_basename($model));
         }
         if($classname == "") {
-            $classname = ucfirst($name) . "Controller";
+            $classname = Str::ucfirst(Str::camel(($name) . "Controller"));
         }
         LaravelRoute::group(['middleware' => 'web'], function() use ($prefix, $name, $classname) {
             LaravelRoute::group(['middleware' => ['admin']], function () use ($prefix, $name, $classname) {
@@ -46,7 +46,7 @@ class Route{
             $name = Str::snake(class_basename($model));
         }
         if($classname == "") {
-            $classname = ucfirst($name) . "Controller";
+            $classname = ucfirst(Str::camle($name . "Controller"));
         }
         LaravelRoute::get($prefix.'/'.$name, $classname.'@apiList');
         LaravelRoute::get($prefix.'/'.$name.'/show/{id}' , $classname.'@apiShow');

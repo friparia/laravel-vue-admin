@@ -16,6 +16,7 @@ abstract class Model extends LaravelModel
     protected $searchable = [];
     protected $switchable = [];
     protected $extended = [];
+    protected $order = [];
 
     protected $guarded = [];
 
@@ -95,6 +96,10 @@ abstract class Model extends LaravelModel
         }
         return $columns;
     }
+    public function getAllColumns()
+    {
+        return $this->fields->getColumns();
+    }
 
     public function getColumnDescription($column){
         return false;
@@ -104,8 +109,6 @@ abstract class Model extends LaravelModel
         $columns = [];
 
         $this->unlistable[] = 'id';
-
-
         foreach($this->getColumns() as $column){
             if(!in_array($column['name'], $this->unlistable)){
                 $columns[] = $column;
@@ -168,6 +171,9 @@ abstract class Model extends LaravelModel
         if($column->type == 'enum'){
             return $column->values[$this->$name];
         }
+        if($column->type == 'boolean'){
+            return ['0' => '否', '1' => '是'][$this->$name];
+        }
         return $this->$name;
     }
 
@@ -222,8 +228,16 @@ abstract class Model extends LaravelModel
     public function getValueGroups($column){
         $data = [];
         if(!in_array($column, $this->extended)){
+            $type = $this->getColumn($column)->type;
             foreach(self::all()->groupBy($column) as $key => $item){
-                $data[$key] = $item[0][$column];
+                if($type == 'enum'){
+                    $value = $this->getColumn($column)->values[$key];
+                }elseif($type == 'boolean'){
+                    $value = ['0' => '否', '1' => '是'][$key];
+                }else{
+                    $value = $item[0][$column];
+                }
+                $data[$key] = $value;
             }
         }else{
             $data = $this->getExtendedValueGroups($column);
@@ -312,6 +326,15 @@ abstract class Model extends LaravelModel
         }
 
         return $dirty;
+    }
+
+    public function toArray(){
+         $attributes = $this->attributesToArray();
+         $arr = array_merge($attributes, $this->relationsToArray());
+         foreach($this->relations as $key => $relation){
+             unset($arr[$key]);
+         }
+         return $arr;
     }
 
 

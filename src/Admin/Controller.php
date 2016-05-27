@@ -25,18 +25,6 @@ class Controller extends LaravelController
             $request->session()->flash("error", "结果不存在");
             return response()->json();
         }else{
-            $validator = Validator::make($request->all(), $instance->getRules(), $instance->getValidatorMessages());
-            $validator->after(function($validator) use ($instance){
-                foreach ($instance->getCustomValidatorCallback() as $callback) {
-                    if (!$callback()) {
-                        //TODO
-                    }
-                }
-            });
-            if($validator->fails()){
-                $request->session()->flash("error", $validator->errors());
-                return response()->json();
-            }
             if(!in_array($action, $instance->getAllActions())){
                 $request->session()->flash("error", '方法不存在');
                 return response()->json();
@@ -66,6 +54,18 @@ class Controller extends LaravelController
                     $instance->{$name} = $value;
                 }
             }
+            $validator = Validator::make($attributes, $instance->getRules(), $instance->getValidatorMessages());
+            $validator->after(function($validator) use ($instance){
+                foreach ($instance->getCustomValidatorCallback() as $callback) {
+                    if (!$callback()) {
+                        //TODO
+                    }
+                }
+            });
+            if($validator->fails()){
+                $request->session()->flash("error", $validator->errors()->first());
+                return response()->json();
+            }
             if($action == 'create'){
                 $instance->$action($attributes);
             }else{
@@ -82,13 +82,19 @@ class Controller extends LaravelController
         $data = $instance = $this->initInstance();
         $query = [];
         $filter = [];
+        $columns = []; 
+        foreach($instance->getAllColumns() as $column){
+            $columns[] = $column->name;
+        }
         foreach($request->input() as $key => $value){
             if(in_array($key, $instance->getExtended())){
                 if($value != ""){
                     $data = $instance->filter($key, $value, $data);
                 }
             }else{
-                $data = $data->where($key, 'LIKE', "%".$value."%");
+                if(in_array($key, $columns)){
+                    $data = $data->where($key, 'LIKE', "%".$value."%");
+                }
             }
             $query[$key] = $value;
         }
@@ -160,9 +166,9 @@ class Controller extends LaravelController
     public function apiShow($id){
         $instance = $this->initInstance($id);
         if(is_null($instance)){
-            $result = ['status' => false];
+            $result = ['status' => false, 'msg' => '你查找的对象不存在'];
         }else{
-            $result = ['status' => true, 'item' => $instance];
+            $result = ['status' => true, 'item' => $instance->toArray()];
         }
         return response()->json($result);
     }

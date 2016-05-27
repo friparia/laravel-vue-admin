@@ -59,7 +59,7 @@
         <td>
             @if($instance->isSwitchable($column->name))
             <div class="ui toggle checkbox">
-                <input data-id="{{ $item->id }}" class="switch" type="checkbox" name="{{ $column->name }}" @if($item->getValue($column->name)) checked @endif>
+                <input data-id="{{ $item->id }}" class="switch" type="checkbox" name="{{ $column->name }}" @if($item->getRawValue($column->name)) checked @endif>
                 <label></label>
             </div>
             @else
