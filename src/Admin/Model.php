@@ -19,6 +19,7 @@ abstract class Model extends LaravelModel
     protected $order = [];
 
     protected $guarded = [];
+    protected $title = "";
 
     public $timestamps = true;
     protected $fields;
@@ -102,7 +103,11 @@ abstract class Model extends LaravelModel
     }
 
     public function getColumnDescription($column){
-        return false;
+        $description = $this->getColumn($column)->description;
+        if(isset($description)){
+            return $description;
+        }
+        return $column;
     }
 
     public function getListableColumns(){
@@ -192,7 +197,7 @@ abstract class Model extends LaravelModel
                 if($value['each']){
                     $actions[$action] = $value;
                 }
-            }else{
+            }elseif($value['type'] != 'extend'){
                 $actions[$action] = $value;
             }
         }
@@ -335,6 +340,10 @@ abstract class Model extends LaravelModel
              unset($arr[$key]);
          }
          return $arr;
+    }
+
+    public function getTitle(){
+        return $this->title;
     }
 
 

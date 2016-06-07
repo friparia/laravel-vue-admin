@@ -12,6 +12,7 @@ class Controller extends LaravelController
 
 
     protected $model;
+    protected $actions = [];
 
     public function index($action, $id = null)
     {
@@ -21,6 +22,13 @@ class Controller extends LaravelController
     public function admin(Request $request, $action, $id = null)
     {
         $instance = $this->initInstance($id);
+        if(in_array($action, $this->actions)){
+            if(is_null($instance)){
+                return $this->$action();
+            }else{
+                return $this->$action($id);
+            }
+        }
         if(is_null($instance)){
             $request->session()->flash("error", "结果不存在");
             return response()->json();
@@ -40,31 +48,33 @@ class Controller extends LaravelController
                 return view($view)->with('instance', $instance)->with('controller', $controller);;
             }
             $attributes = [];
-            foreach($instance->getEditableColumns() as $column){
-                $name = $column->name;
-                if($instance->getExtendedName($name) != ""){
-                    $name = $instance->getExtendedName($name);
-                }
-                $value = $request->input($name);
-                if($column->type == 'boolean'){
-                    $value = $value == "on";
-                }
-                if(!is_null($value)){
-                    $attributes[$name] = $value;
-                    $instance->{$name} = $value;
-                }
-            }
-            $validator = Validator::make($attributes, $instance->getRules(), $instance->getValidatorMessages());
-            $validator->after(function($validator) use ($instance){
-                foreach ($instance->getCustomValidatorCallback() as $callback) {
-                    if (!$callback()) {
-                        //TODO
+            if(in_array($action, ['create', 'update'])){
+                foreach($instance->getEditableColumns() as $column){
+                    $name = $column->name;
+                    if($instance->getExtendedName($name) != ""){
+                        $name = $instance->getExtendedName($name);
+                    }
+                    $value = $request->input($name);
+                    if($column->type == 'boolean'){
+                        $value = $value == "on";
+                    }
+                    if(!is_null($value)){
+                        $attributes[$name] = $value;
+                        $instance->{$name} = $value;
                     }
                 }
-            });
-            if($validator->fails()){
-                $request->session()->flash("error", $validator->errors()->first());
-                return response()->json();
+                $validator = Validator::make($attributes, $instance->getRules(), $instance->getValidatorMessages());
+                $validator->after(function($validator) use ($instance){
+                    foreach ($instance->getCustomValidatorCallback() as $callback) {
+                        if (!$callback()) {
+                            //TODO
+                        }
+                    }
+                });
+                if($validator->fails()){
+                    $request->session()->flash("error", $validator->errors()->first());
+                    return response()->json();
+                }
             }
             if($action == 'create'){
                 $instance->$action($attributes);
@@ -92,18 +102,18 @@ class Controller extends LaravelController
                     $data = $instance->filter($key, $value, $data);
                 }
             }else{
-                if(in_array($key, $columns)){
+                if(in_array($key, $columns) && $value != '*'){
                     $data = $data->where($key, 'LIKE', "%".$value."%");
                 }
             }
             $query[$key] = $value;
         }
-        $data = $data->paginate(20);
+        $data = $data->orderBy('id', 'desc')->paginate(20);
         $controller = "\\".get_called_class();
         return view('admin::list', compact('data', 'instance', 'controller', 'query'));
     }
 
-    public function adminShow(Request $request, $action)
+    public function adminShow($id)
     {
     }
 

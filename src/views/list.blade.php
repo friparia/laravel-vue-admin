@@ -1,4 +1,5 @@
 @extends('admin::layout')
+@section('title', $instance->getTitle())
 @section('content')
 <div class="ui grid">
     <div class="one wide column">
@@ -23,10 +24,21 @@
         </div>
         @endif
         @foreach($instance->getSingleActions() as $action => $info)
+        @if ($info['type'] == 'url')
+        @if(Auth::user()->canVisit($info['url']))
         <div class="ui button action {{ $action }} {{ $info['color'] or '' }}">
             <i class="{{ $info['icon'] or 'edit' }} icon"></i>
             {{ $info['description'] or $action }}
         </div>
+        @endif
+        @else
+        @if(Auth::user()->canVisit(action($controller."@admin", ["action" => $action])))
+        <div class="ui button action {{ $action }} {{ $info['color'] or '' }}">
+            <i class="{{ $info['icon'] or 'edit' }} icon"></i>
+            {{ $info['description'] or $action }}
+        </div>
+        @endif
+        @endif
         @endforeach
         </form>
     </div>
@@ -38,19 +50,21 @@
             <th>
                 @if($instance->canFilterColumn($column->name))
                 <select class="ui dropdown filter" name="{{ $column->name }}">
-                    <option value="0">全部{{ $column->description }}</option>
+                    <option value="*">全部{{ $column->description }}</option>
                     @foreach($instance->getValueGroups($column->name) as $key => $value)
-                    <option value="{{ $key }}">{{ $value }}</option>
+                    <option @if( (Request::input($column->name) != '*') && (Request::input($column->name) == $key) && (!is_null(Request::input($column->name))) ) selected @endif value="{{ $key }}">{{ $value }}</option>
                     @endforeach
                 </select>
                 @else
-                {{ $column->description or $column->name }}
+                {{ $instance->getColumnDescription($column->name) }}
                 @endif
             </th>
             @endforeach
+            @if(count($instance->getEachActions()))
             <th>
                 操作
             </th>
+            @endif
         </tr>
     </thead>
     @foreach($data as $item)
@@ -67,14 +81,27 @@
             @endif
         </td>
         @endforeach
+        @if(count($instance->getEachActions()))
         <td>
             @foreach($instance->getEachActions() as $action => $info)
+            @if ($info['type'] == 'url')
+            @if(Auth::user()->canVisit($info['url']))
             <button class="ui basic button action {{ $action }} {{ $info['color'] or ''}}" data-id="{{ $item->id }}">
                 <i class="{{ $info['icon'] or 'edit' }} icon"></i>
                 {{ $info['description'] or $action }}
             </button>
+            @endif
+            @else
+            @if(Auth::user()->canVisit(action($controller."@admin", ["action" => $action])))
+            <button class="ui basic button action {{ $action }} {{ $info['color'] or ''}}" data-id="{{ $item->id }}">
+                <i class="{{ $info['icon'] or 'edit' }} icon"></i>
+                {{ $info['description'] or $action }}
+            </button>
+            @endif
+            @endif
             @endforeach
         </td>
+        @endif
     </tr>
     @endforeach
 </table>
@@ -98,7 +125,7 @@ $(function(){
             Dialog.confirm('确认{{ $info['description'] or $action}}?', '{{ action($controller."@admin", ["action" => $action]) }}/' + id);
         @elseif ($info['type'] == 'modal')
             Dialog.modal('{{ action($controller."@admin", ["action" => $action]) }}/' + id);
-        @else
+        @elseif ($info['type'] == 'url')
             location.href = '/admin/{{ $info['url'] }}' + id;
             @endif
     });
@@ -109,9 +136,7 @@ $(function(){
     });
     $('.switch').change(function(){
         var id = $(this).data('id');
-        var obj = {};
-        obj[$(this).attr('name')] = $(this).prop('checked');
-        $.post('{{ action($controller."@admin", ["action" => 'update']) }}/' + id, obj, function(){
+        $.post('{{ action($controller."@admin", ["action" => 'switch']) }}_' + $(this).attr('name') +'/' + id, function(){
             location.reload();
         });
 
