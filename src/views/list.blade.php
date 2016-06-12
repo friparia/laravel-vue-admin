@@ -2,9 +2,14 @@
 @section('title', $instance->getTitle())
 @section('content')
 <div class="ui grid">
-    <div class="one wide column">
+    <div class="two wide column">
+        @foreach($instance->getLeftActions() as $action => $info)
+        <a class="ui button action {{ $action }} {{ $info['color'] or 'blue' }}" href="{{ $info['url'] }}">
+            {{ $info['description'] or $action }}
+        </a>
+        @endforeach
     </div>
-    <div class="fifteen wide column right aligned">
+    <div class="fourteen wide column right aligned">
         <form id="search" action="">
         @foreach ($instance->getFilterableColumns() as $column)
         <input type="hidden" name="{{ $column->name }}" value="{{ $query[$column->name] or '' }}">
@@ -105,6 +110,17 @@
     </tr>
     @endforeach
 </table>
+<div class="ui right floated pagination menu">
+            <a class="icon item" href="{{ $data->previousPageUrl() }}">
+              <i class="left chevron icon"></i>
+            </a>
+            <a class="item">{{ $data->currentPage() }}</a>
+            @if($data->hasMorePages())
+            <a class="icon item" href="{{ $data->nextPageUrl() }}">
+              <i class="right chevron icon"></i>
+            </a>
+@endif
+          </div>
 <script>
 $(function(){
     @foreach($instance->getSingleActions() as $action => $info)
@@ -130,8 +146,10 @@ $(function(){
             @endif
     });
     @endforeach
-    $('.filter').change(function(){
+    $('.filter select').change(function(){
+        console.log($(this).val());
         $('#search input[name=' + $(this).attr('name') + ']').val($(this).val());
+        console.log($('#search input[name=' + $(this).attr('name') + ']').val());
         $('#search').submit();
     });
     $('.switch').change(function(){

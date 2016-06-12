@@ -23,7 +23,7 @@ class Controller extends LaravelController
     {
         $instance = $this->initInstance($id);
         if(in_array($action, $this->actions)){
-            if(is_null($instance)){
+            if(is_null($id)){
                 return $this->$action();
             }else{
                 return $this->$action($id);
@@ -58,6 +58,20 @@ class Controller extends LaravelController
                     if($column->type == 'boolean'){
                         $value = $value == "on";
                     }
+                    if($column->type == 'extended'){
+                        if(!is_array($instance->getExtendedType($column->name))){
+                            if($action == 'create'){
+                                $value = null;
+                            }else{
+                                if ($request->hasFile($column->name)) {
+                                    $request->file($column->name)->move(public_path('upload/').$instance->getFileStoragePath($column->name), $instance->getFileStorageName($column->name));
+                                    $value = $instance->getFileUrl($column->name);
+                                }else{
+                                    $value = null;
+                                }
+                            }
+                        }
+                    }
                     if(!is_null($value)){
                         $attributes[$name] = $value;
                         $instance->{$name} = $value;
@@ -77,7 +91,16 @@ class Controller extends LaravelController
                 }
             }
             if($action == 'create'){
-                $instance->$action($attributes);
+                $instance = $instance->$action($attributes);
+                foreach($instance->getExtendedColumns() as $column){
+                    if(!is_array($instance->getExtendedType($column->name))){
+                        if ($request->hasFile($column->name)) {
+                            $request->file($column->name)->move(public_path('upload/').$instance->getFileStoragePath($column->name), $instance->getFileStorageName($column->name));
+                            $instance->{$column->name} = $instance->getFileUrl($column->name);
+                        }
+                    }
+                }
+                $instance->save();
             }else{
                 $instance->$action();
             }

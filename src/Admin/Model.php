@@ -130,6 +130,22 @@ abstract class Model extends LaravelModel
         return "";
     }
 
+    public function getExtendedColumns(){
+        $columns = [];
+        foreach($this->extended as $extended){
+            if(!$description = $this->getColumnDescription($extended)){
+                $description = $extended;
+            }
+            $columns[] = new Fluent([
+                'name' => $extended,
+                'type' => 'extended',
+                'description' => $description
+            ]);
+        }
+        return $columns;
+
+    }
+
     public function getFilterableColumns(){
         $columns = [];
         foreach($this->getColumns() as $column){
@@ -214,6 +230,15 @@ abstract class Model extends LaravelModel
         return $actions;
     }
 
+    public function getLeftActions(){
+        $actions = [];
+        foreach($this->actions as $action => $value){
+            if(isset($value['type']) && $value['type'] == "left"){
+                $actions[$action] = $value;
+            }
+        }
+        return $actions;
+    }
     public function getBatchActions(){
         return [];
     }
@@ -346,5 +371,16 @@ abstract class Model extends LaravelModel
         return $this->title;
     }
 
+    public function getFileStoragePath($name){
+        return 'img/'.$name.'';
+    }
+
+    public function getFileStorageName($name){
+        return $this->id;
+    }
+
+    public function getFileUrl($name){
+        return asset('upload/'.$this->getFileStoragePath($name).'/'.$this->getFileStorageName($name));
+    }
 
 }

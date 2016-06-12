@@ -26,7 +26,8 @@
                 @endforeach
             </select>
             @else
-//TODO
+            <input name="{{ $column->name }}" placeholder="{{ $column->description }}" type="file">
+            <img class="preview {{ $column->name }}" src="{{ $instance->getValue($column->name)  }}"/>
             @endif
             @else
             <input name="{{ $column->name }}" placeholder="{{ $column->description }}" type="text" value="{{ $instance->getValue($column->name) }}">
@@ -39,6 +40,16 @@
 $(function(){
     $('#admin-form .ui.checkbox').checkbox();
     $('#admin-form .ui.dropdown').dropdown();
+    $('#admin-form input[type="file"]').change(function(){
+        $that = $(this);
+        if (this.files && this.files[0]) {
+            var reader = new FileReader();
+            reader.onload = function (e) {
+                $('.preview.'+$that.attr('name')).attr('src', e.target.result);
+            }
+            reader.readAsDataURL(this.files[0]);
+        }
+    });
     $('#admin-form .ui.dropdown.province').dropdown({
         onChange: function(value, text, choice){
             $.get('/city/' + value, function(data){

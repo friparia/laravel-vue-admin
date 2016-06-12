@@ -9,6 +9,7 @@ use Illuminate\Auth\Authenticatable;
 class User extends Model implements AuthenticatableContract
 {
     use Authenticatable;
+    protected $title = "员工";
     protected $unlistable = ['password', 'is_admin', 'created_at', 'updated_at', 'remember_token', 'email', 'name'];
     protected $uneditable = ['password', 'is_admin', 'created_at', 'updated_at', 'remember_token', 'email', 'group', 'name'];
     protected $searchable = ['cname', 'cellphone'];

@@ -2,6 +2,7 @@
 namespace Friparia\Admin\Models;
 use Friparia\Admin\Model;
 class Role extends Model{
+    protected $title = "用户组";
     protected $unlistable = ['description', 'created_at', 'updated_at'];
     protected $uneditable = ['description', 'created_at', 'updated_at'];
     protected $actions = [
