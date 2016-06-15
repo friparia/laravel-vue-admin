@@ -23,6 +23,9 @@ class AdminServiceProvider extends ServiceProvider
             __DIR__.'/../views' => resource_path('views/friparia/admin'),
             __DIR__.'/../../assets' => public_path(''),
         ]);
+        // $this->publishes([
+        //     __DIR__.'/../database/migrations/' => database_path('migrations'),
+        // ]);
     }
 
     /**
