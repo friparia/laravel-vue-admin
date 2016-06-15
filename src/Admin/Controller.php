@@ -6,6 +6,7 @@ use Illuminate\Routing\Controller as LaravelController;
 use Illuminate\Http\Request;
 use Validator;
 use Illuminate\Support\Str;
+use App\Models\Log;
 
 class Controller extends LaravelController
 {
@@ -19,9 +20,19 @@ class Controller extends LaravelController
         dd($action, $id);
     }
 
+    private function logActions(){
+        return [
+            'create' => '创建',
+            'update' => '编辑',
+            'delete' => '删除',
+        ];
+    }
     public function admin(Request $request, $action, $id = null)
     {
         $instance = $this->initInstance($id);
+        if(in_array($action, array_keys($this->logActions())) && $instance->getTitle() != ""){
+            Log::add($instance->getTitle().$this->logActions()[$action]);
+        }
         if(in_array($action, $this->actions)){
             if(is_null($id)){
                 return $this->$action();
