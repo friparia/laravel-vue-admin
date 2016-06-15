@@ -2,56 +2,139 @@
 namespace Friparia\Admin;
 
 use Illuminate\Database\Eloquent\Model as LaravelModel;
-
 use Illuminate\Support\Fluent;
+use Illuminate\Support\Str;
 
 abstract class Model extends LaravelModel
 {
-    protected $slug;
-    protected $unlistable = [];
-    protected $unshowable = [];
-    protected $uncreatable = [];
-    protected $uneditable = [];
-    protected $filterable = [];
-    protected $searchable = [];
-    protected $switchable = [];
-    protected $extended = [];
-    protected $order = [];
 
+    protected $_name;
+    /**
+     * List page configurations
+     */
+    protected $_unlistable = [];
+    protected $_filterable = [];
+    protected $_switchable = [];
+
+
+    /**
+     * Create or edit page  configurations
+     */
+    protected $_uncreatable = [];
+    protected $_uneditable = [];
+
+
+    protected $_unshowable = [];
+
+
+    /**
+     * Model fields defenition
+     */
+    protected $_fields = [];
+
+
+    /**
+     * Model actions
+     * Array of actions
+     */
+
+    protected $_actions = [];
+
+    /**
+     * Laravel extensions
+     */
     protected $guarded = [];
-    protected $title = "";
 
-    public $timestamps = true;
-    protected $fields;
-    //each boolean
-    //color string
-    //icon string
-    //type link/confirm/modal
-    //url string
-    protected $actions = [];
+    /**
+     *
+     * protected $title = "商户";
+    protected $unlistable = ['created_at', 'updated_at', 'deleted_at', 'card'];
+    protected $filterable = ['type', 'province', 'city', 'district'];
+    protected $searchable = ['name'];
+    protected $extended = ['province', 'city', 'district', 'card'];
+    protected $switchable = ['is_top', 'is_cooper'];
+    protected $order = ['name', 'type', 'province', 'city', 'district', 'is_top', 'is_cooper'];
+    public $timestamps = false;
+    protected $actions = [
+        'edit' => [
+            'type' => 'modal',
+            'color' => 'blue',
+            'description' => '修改',
+        ],
+        'add' => [
+            'type' => 'modal',
+            'single' => true,
+            'each' => false,
+            'color' => 'green',
+            'icon' => 'add',
+            'description' => '添加',
+        ],
+        'switch_is_top' => [
+            'type' => 'extend',
+        ],
+        'switch_is_cooper' => [
+            'type' => 'extend',
+        ],
+    ];
+    protected function construct(){
+        ///////
+        //$this->fields->timestamps(); 
+        //$this->fields->softDeletes();
+        ///////
+        $this->fields->string('name')->description('商户名称');
+        $this->fields->enum('type',['sport','entertainment','travel','food','other'])->description('商户类型')->values([
+            'sport' => '运动',
+            'entertainment' => '娱乐',
+            'travel' => '旅行',
+            'food' => '美食',
+            'other' => '其他',
+        ]);
+        $this->fields->boolean('is_top')->description('置顶');
+        $this->fields->boolean('is_cooper')->description('合作');
+        $this->fields->relation('district')->belongsTo('App\Models\District')->description("区县");
+    }
+     */
 
     public function __construct($attributes = [])
     {
         parent::__construct($attributes);
-        $this->fields = new Blueprint($this->getTable());
-        $this->construct();
-        $this->fields->increments($this->primaryKey);
-
-        // $this->test2 = 
+        $this->configure();
+        $this->_name = Str::snake(class_basename($this));
+        // $this->fields = new Blueprint($this->getTable());
     }
 
-    protected function construct()
+    protected function configure(){
+    }
+
+    protected function addField($type, $name){
+        $field = new Field($type, $name); 
+        $fields = $this->_fields;
+        $fields[] = $field;
+        $this->_fields = $fields;
+        return $field;
+    }
+
+    protected function addAction($type, $name){
+        $action = new Action($type, $name); 
+        $actions = $this->_actions;
+        $actions[] = $action;
+        $this->_actions = $actions;
+        return $action;
+    }
+
+    public function createMigrationFile(){
+        $creator = new MigrationCreator($this);
+        $path = database_path().'/migrations';
+        $creator->create($this->_name, $path, $this->getTable());
+    }
+
+
+    public function getFields()
     {
+        return $this->_fields;
     }
 
     /**
-     * return all the fields in database
-     */
-    public function getFields()
-    {
-        return $this->fields;
-    }
-
     public function getRelations()
     {
         return $this->fields->getRelations();
@@ -69,7 +152,7 @@ abstract class Model extends LaravelModel
     }
 
     //need reconstruct
-    public function getColumns()
+    public function getColumns1()
     {
         $cols = $this->fields->getColumns();
         $relatedKey = [];
@@ -382,5 +465,6 @@ abstract class Model extends LaravelModel
     public function getFileUrl($name){
         return asset('upload/'.$this->getFileStoragePath($name).'/'.$this->getFileStorageName($name));
     }
+     */
 
 }
