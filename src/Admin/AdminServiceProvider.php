@@ -15,14 +15,15 @@ class AdminServiceProvider extends ServiceProvider
      */
     public function boot(Router $router)
     {
-        $router->middlewareGroup('admin', [
-            \Friparia\Admin\Middleware::class,
-        ]);
-        $this->loadViewsFrom(__DIR__.'/../views', 'admin');
+        // $router->middlewareGroup('admin', [
+        //     \Friparia\Admin\Middleware::class,
+        // ]);
+        $this->loadViewsFrom(__DIR__.'/../resources/views', 'admin');
         $this->publishes([
-            __DIR__.'/../views' => resource_path('views/friparia/admin'),
-            __DIR__.'/../../assets' => public_path(''),
+            __DIR__.'/../resources/assets/js' => resource_path('assets/friparia/admin'),
+            __DIR__.'/../config/' => config_path(),
         ]);
+        $this->loadRoutesFrom(__DIR__.'/routes.php');
         // $this->publishes([
         //     __DIR__.'/../database/migrations/' => database_path('migrations'),
         // ]);

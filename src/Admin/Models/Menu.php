@@ -12,16 +12,12 @@ use Friparia\Admin\Model;
 
 class Menu extends Model
 {
-    /**
-     *
-     */
-    public $timestamps = false;
-    protected function construct()
+    protected function configure()
     {
-        $this->fields->integer('pid');
-        $this->fields->string('name');
-        $this->fields->string('url')->nullable();
-        $this->fields->integer('weight');
+        $this->addField('integer', 'pid');
+        $this->addField('string', 'name');
+        $this->addField('string', 'url')->nullable();
+        $this->addField('integer', 'weight');
     }
 
 }

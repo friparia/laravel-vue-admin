@@ -10,56 +10,25 @@ class User extends Model implements AuthenticatableContract
 {
     use Authenticatable;
     protected $title = "员工";
-    protected $unlistable = ['password', 'is_admin', 'created_at', 'updated_at', 'remember_token', 'email', 'name'];
-    protected $uneditable = ['password', 'is_admin', 'created_at', 'updated_at', 'remember_token', 'email', 'group', 'name'];
-    protected $searchable = ['cname', 'cellphone'];
-    protected $actions = [
-        'edit' => [
-            'type' => 'modal',
-            'color' => 'blue',
-            'description' => '修改',
-        ],
-        'add' => [
-            'type' => 'modal',
-            'single' => true,
-            'each' => false,
-            'color' => 'green',
-            'icon' => 'add',
-            'description' => '添加',
-        ],
-    ];
-    protected $extended = ['group'];
-    protected function construct(){
-        $this->fields->string('name')->description("账号");
-        $this->fields->string('cname')->description("姓名");
-        $this->fields->string('cellphone')->description("电话");
-        $this->fields->string('password');
-        $this->fields->boolean('is_admin')->default(false);
-        $this->fields->timestamps();
-        $this->fields->rememberToken();
+    protected $_listable = ['cname', 'name', 'role'];
+    protected $_creatable = ['cname', 'name', 'password', 'confirm_password', 'role'];
+    protected $_searchable = ['cname', 'name'];
+    protected $_editable = ['cname', 'password', 'confirm_password', 'role'];
+    protected $_filterabel = ['role'];
+    protected function configure(){
+        $this->addField('string', 'name')->description("手机");
+        $this->addField('string', 'remember_token');
+        $this->addField('string', 'cname')->description("姓名");
+        $this->addField('string', 'password')->description("密码")->password();
+        $this->addField('boolean', 'is_admin')->default(false);
+        $this->addRelation('many', 'role', 'Friparia\\Admin\\Models\\Role')->description('用户组')->descriptor('name');
+        $this->addField('string', 'confirm_password')->description("密码确认")->extended()->password();
+        $this->addAction('modal', 'add')->single()->color('success')->description("添加");
+        $this->addAction('modal', 'edit')->each()->color('info')->description("编辑");
     }
 
     public function role(){
         return $this->belongsToMany('Friparia\\Admin\\Models\\Role');
-    }
-
-    public function getColumnDescription($name){
-        if($name == 'group'){
-            return "用户组";
-        }
-        return parent::getColumnDescription($name);
-    }
-
-    public function getValue($name){
-        if($name == 'group'){
-            $data = [];
-            foreach($this->role as $role){
-                $data[] = $role->name;
-            }
-            return implode(',', $data);
-        }
-
-        return parent::getValue($name);
     }
 
     public function hasPermission($permission_name){
@@ -91,4 +60,18 @@ class User extends Model implements AuthenticatableContract
         $uri = $segments[0];
         return $this->hasPermission(implode('.', explode('/', $uri)));
     }
+
+    // ------------ TAT ------------
+    public function trader(){
+        if($this->is_trader){
+            $trader = \App\Models\Trader::where('user_id', $this->id)->first();
+        }else{
+            $trader = \App\Models\Trader::where('user_id', $this->trader_id)->first();
+        }
+        if(is_null($trader)){
+            return '';
+        }
+        return $trader->id;
+    }
+    // ----------------------------
 }

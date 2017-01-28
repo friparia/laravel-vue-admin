@@ -1,23 +1,31 @@
 <?php
 namespace Friparia\Admin;
 
-use Illuminate\Support\Fluent;
-
-class Action
+class Action extends Fluent
 {
-    protected $_name;
-    protected $_type;
-    protected $_color;
+    protected $_color = 'default';
     protected $_icon;
-    public function __construct($type, $name){
-        $this->_type = $type;
-        $this->_name = $name;
+    protected $_single;
+    protected $_each;
+
+    public function __get($name){
+        $name = "_".$name;
+        if(in_array($name, ['_description', '_color', '_icon'])){
+            $array = $this->$name;
+            return $array[0];
+        }
+        if(!is_null($this->$name)){
+            return $this->$name;
+        }
+        return null;
     }
 
-    public function __call($method, $parameters){
-        $name = "_".$method;
-        $this->$name = count($parameters) > 0 ? $parameters[0] : true;
-        return $this;
+    public function isSingle(){
+        return is_null($this->_single) ? false : $this->_single;
+    }
+
+    public function isEach(){
+        return is_null($this->_each) ? false : $this->_each;
     }
 }
 

@@ -24,13 +24,21 @@ First, add a line in the section of `require` in `composer.json` file:
     
 and run `composer install`, or, you can execute the following command:
     
-    composer require "friparia/admin:dev-master"
+
 
 Then, add a line of service provider in `config/app.php`:
     
-    Friparia\Admin\AdminServiceProvider::class,
+
 
 In public directory run:
     
     bower install admin-lte
-    
+
+
+
+
+
+1. composer require "friparia/admin:dev-master"
+2. Friparia\Admin\AdminServiceProvider::class,
+3. npm i element-ui -S
+

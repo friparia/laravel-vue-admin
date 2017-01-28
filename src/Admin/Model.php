@@ -12,20 +12,17 @@ abstract class Model extends LaravelModel
     /**
      * List page configurations
      */
-    protected $_unlistable = [];
+    protected $_listable = [];
     protected $_filterable = [];
+    protected $_searchable = [];
     protected $_switchable = [];
 
 
     /**
      * Create or edit page  configurations
      */
-    protected $_uncreatable = [];
-    protected $_uneditable = [];
-
-
-    protected $_unshowable = [];
-
+    protected $_creatable = [];
+    protected $_editable = [];
 
     /**
      * Model fields defenition
@@ -37,14 +34,20 @@ abstract class Model extends LaravelModel
      * Model actions
      * Array of actions
      */
-
     protected $_actions = [];
+
+    /**
+     * Model relations
+     * Array of relations
+     */
+    protected $_relations = [];
 
     /**
      * Laravel extensions
      */
     protected $guarded = [];
 
+    protected $_title = "";
     /**
      *
      * protected $title = "商户";
@@ -106,12 +109,23 @@ abstract class Model extends LaravelModel
     protected function configure(){
     }
 
-    protected function addField($type, $name){
+    protected function addField($type, $name = ""){
         $field = new Field($type, $name); 
         $fields = $this->_fields;
         $fields[] = $field;
         $this->_fields = $fields;
         return $field;
+    }
+
+    protected function addRelation($type, $name, $model){
+        if($type == 'belong'){
+            $this->addField('integer', $name."_id");
+        }
+        $relation = new Relation($type, $name, $model);
+        $relations = $this->_relations;
+        $relations[] = $relation;
+        $this->_relations = $relations;
+        return $relation;
     }
 
     protected function addAction($type, $name){
@@ -128,343 +142,261 @@ abstract class Model extends LaravelModel
         $creator->create($this->_name, $path, $this->getTable());
     }
 
+    public function getName(){
+        return $this->_name;
+    }
+
 
     public function getFields()
     {
         return $this->_fields;
     }
 
-    /**
     public function getRelations()
     {
-        return $this->fields->getRelations();
+        return $this->_relations;
     }
 
-
-    public function getManyToManyRelation(){
+    public function getManyRelations(){
         $relations = [];
         foreach($this->getRelations() as $relation){
-            if($relation['type'] == Relation::MANY_TO_MANY){
+            if($relation->isMany()){
                 $relations[] = $relation;
             }
         }
         return $relations;
     }
 
-    //need reconstruct
-    public function getColumns1()
-    {
-        $cols = $this->fields->getColumns();
-        $relatedKey = [];
-        foreach($this->getRelations() as $relation){
-            if($relation->type == Relation::BELONGS_TO){
-                $relatedKey[] = $relation->foreignKey;
-            }
-        }
-        $columns = [];
-        foreach($cols as $column){
-            if(!in_array($column->name, $relatedKey)){
-                $columns[] = $column;
-            }
-        }
-
-        foreach($this->extended as $extended){
-            if(!$description = $this->getColumnDescription($extended)){
-                $description = $extended;
-            }
-            $columns[] = new Fluent([
-                'name' => $extended,
-                'type' => 'extended',
-                'description' => $description
-            ]);
-        }
-        return $columns;
-    }
-    public function getAllColumns()
-    {
-        return $this->fields->getColumns();
+    public function getTitle(){
+        return $this->_title;
     }
 
-    public function getColumnDescription($column){
-        $description = $this->getColumn($column)->description;
-        if(isset($description)){
-            return $description;
-        }
-        return $column;
-    }
-
-    public function getListableColumns(){
-        $columns = [];
-
-        $this->unlistable[] = 'id';
-        foreach($this->getColumns() as $column){
-            if(!in_array($column['name'], $this->unlistable)){
-                $columns[] = $column;
+    public function getDatabaseFields(){
+        $fields = [];
+        foreach($this->_fields as $field){
+            if(!$field->isExtended()){
+                $fields[] = $field;
             }
         }
-        return $columns;
+        return $fields;
     }
 
-    public function getExtendedType($name){
+    public function getListableFields(){
+        $fields = [];
+        foreach($this->_fields as $field){
+            if(in_array($field->name, $this->_listable)){
+                $fields[] = $field;
+            }
+        }
+        foreach($this->_relations as $relation){
+            if(in_array($relation->name, $this->_listable)){
+                $fields[] = $relation;
+            }
+        }
+        return $fields;
+    }
+
+    public function getFilterableFields(){
+        $fields = [];
+        foreach($this->_fields as $field){
+            if(in_array($field->name, $this->_filterable)){
+                $fields[] = $field;
+            }
+        }
+        foreach($this->_relations as $relation){
+            if(in_array($relation->name, $this->_filterable)){
+                $fields[] = $relation;
+            }
+        }
+        return $fields;
+    }
+
+    public function getCreatableFields(){
+        $fields = [];
+        foreach($this->_fields as $field){
+            if(in_array($field->name, $this->_creatable)){
+                $fields[] = $field;
+            }
+        }
+        foreach($this->_relations as $relation){
+            if(in_array($relation->name, $this->_creatable)){
+                $fields[] = $relation;
+            }
+        }
+        return $fields;
+    }
+
+    public function getSearchableFields(){
+        $fields = [];
+        foreach($this->_fields as $field){
+            if(in_array($field->name, $this->_searchable)){
+                $fields[] = $field;
+            }
+        }
+        foreach($this->_relations as $relation){
+            if(in_array($relation->name, $this->_searchable)){
+                $fields[] = $relation;
+            }
+        }
+        return $fields;
+    }
+
+    public function getEditableFields(){
+        $fields = [];
+        foreach($this->_fields as $field){
+            if(in_array($field->name, $this->_editable)){
+                $fields[] = $field;
+            }
+        }
+        foreach($this->_relations as $relation){
+            if(in_array($relation->name, $this->_editable)){
+                $fields[] = $relation;
+            }
+        }
+        return $fields;
+    }
+
+    public function hasEachAction(){
+        return (bool)count($this->getEachActions());
+    }
+
+    public function isActionExisit($action){
+        return in_array($action, $this->getAllActions());
+    }
+
+    public function getAction($name){
+        foreach($this->_actions as $action){
+            if($name == $action->name){
+                return $action;
+            }
+        }
         return false;
     }
 
-    public function getExtendedName($name){
-        return "";
-    }
-
-    public function getExtendedColumns(){
-        $columns = [];
-        foreach($this->extended as $extended){
-            if(!$description = $this->getColumnDescription($extended)){
-                $description = $extended;
-            }
-            $columns[] = new Fluent([
-                'name' => $extended,
-                'type' => 'extended',
-                'description' => $description
-            ]);
-        }
-        return $columns;
-
-    }
-
-    public function getFilterableColumns(){
-        $columns = [];
-        foreach($this->getColumns() as $column){
-            if(in_array($column['name'], $this->filterable)){
-                $columns[] = $column;
+    public function isModalAction($name){
+        if($action = $this->getAction($name)){
+            if($action->type == 'modal'){
+                return true;
             }
         }
-        return $columns;
-    }
-
-    public function getSearchableColumns(){
-        $columns = [];
-        foreach($this->getColumns() as $column){
-            if(in_array($column['name'], $this->searchable)){
-                $columns[] = $column;
-            }
-        }
-        return $columns;
-    }
-
-    public function getShowableColumns(){}
-
-    public function getEditableColumns(){
-        $columns = [];
-        foreach($this->getColumns() as $column){
-            $name = $column->name;
-            if(!in_array($name, $this->uneditable) && $name != 'id'){
-                $columns[] = $column;
-            }
-        }
-        return $columns;
-    }
-
-    protected function getColumn($name){
-        foreach($this->getColumns() as $column){
-            if($column->get('name') == $name){
-                return $column;
-            }
-        }
-    }
-
-    public function getValue($name){
-        $column = $this->getColumn($name);
-        if($column->type == 'enum'){
-            return $column->values[$this->$name];
-        }
-        if($column->type == 'boolean'){
-            return ['0' => '否', '1' => '是'][$this->$name];
-        }
-        return $this->$name;
-    }
-
-    public function getRawValue($name){
-        return $this->$name;
+        return false;
     }
 
     public function getAllActions(){
-        return array_merge(['create', 'update', 'delete'], array_keys($this->actions));
-    }
-
-    public function getEachActions(){
-        $actions = [];
-        foreach($this->actions as $action => $value){
-            if(isset($value['each'])){
-                if($value['each']){
-                    $actions[$action] = $value;
-                }
-            }elseif($value['type'] != 'extend'){
-                $actions[$action] = $value;
-            }
+        $actions = ['create', 'update', 'delete', 'switch'];
+        foreach($this->_actions as $action){
+            $actions[] = $action->name;
         }
         return $actions;
     }
 
-    public function getModalActions(){
+    public function getEachActions(){
         $actions = [];
-        foreach($this->actions as $action => $value){
-            if(isset($value['type']) && $value['type'] == "modal"){
+        foreach($this->_actions as $action){
+            if($action->isEach()){
                 $actions[] = $action;
             }
         }
         return $actions;
     }
 
-    public function getLeftActions(){
-        $actions = [];
-        foreach($this->actions as $action => $value){
-            if(isset($value['type']) && $value['type'] == "left"){
-                $actions[$action] = $value;
-            }
-        }
-        return $actions;
-    }
-    public function getBatchActions(){
-        return [];
-    }
-
     public function getSingleActions(){
         $actions = [];
-        foreach($this->actions as $action => $value){
-            if(isset($value['single'])){
-                if($value['single']){
-                    $actions[$action] = $value;
-                }
+        foreach($this->_actions as $action){
+            if($action->isSingle()){
+                $actions[] = $action;
             }
         }
         return $actions;
     }
 
-    public function getValueGroups($column){
-        $data = [];
-        if(!in_array($column, $this->extended)){
-            $type = $this->getColumn($column)->type;
-            foreach(self::all()->groupBy($column) as $key => $item){
-                if($type == 'enum'){
-                    $value = $this->getColumn($column)->values[$key];
-                }elseif($type == 'boolean'){
-                    $value = ['0' => '否', '1' => '是'][$key];
-                }else{
-                    $value = $item[0][$column];
+    public function getFieldByName($name){
+        foreach($this->_fields as $field){
+            if($field->name == $name){
+                return $field;
+            }
+        }
+        foreach($this->_relations as $field){
+            if($field->name == $name){
+                return $field;
+            }
+        }
+        return false;
+    }
+
+    public function getFieldValue($field){
+        if($field->type == 'many'){
+            $description = [];
+            foreach($this->{$field->name} as $element){
+                $description[] = $element->getValue($field->getDescriptor());
+            }
+            return implode(',', $description);
+        }
+        if($field->type == 'belong'){
+            return $this->{$field->name}->getValue($field->getDescriptor());
+        }
+        if($field->type == 'enum'){
+            return $this->getEnumValue($field, $this->{$field->name});
+        }
+        if($field->type == 'boolean'){
+            if($this->{$field->name} == true){
+                return "是";
+            }
+            return "否";
+        }
+        return $this->{$field->name};
+    }
+
+    public function getFilterOptions($field){
+        if($field->type == 'enum'){
+            return $field->getOptions();
+        }
+        if($field->type == 'many' || $field->type == 'belong'){
+            return $field->getOptions();
+        }
+        if($field->type == 'boolean'){
+            return $field->getOptions();
+        }
+        return [];
+    }
+    public function getValue($name){
+        return $this->{$name};
+    }
+
+    public function getEnumValue($field, $value){
+        return $field->getEnumValue($value);
+    }
+
+    public function inManyRelation($field, $id){
+        if($field->type == 'many'){
+            foreach($this->getValue($field->name) as $element){
+                if($element->id = $id){
+                    return true;
                 }
-                $data[$key] = $value;
             }
-        }else{
-            $data = $this->getExtendedValueGroups($column);
-        }
-        return $data;
-    }
-
-    public function getExtendedValueGroups($column){
-        return [];
-    }
-
-    public function canFilterColumn($column){
-        if(in_array($column, $this->filterable)){
-            return true;
         }
         return false;
     }
 
-    public function getExtended(){
-        return $this->extended;
-    }
-
-    public function filter($key, $value, $data){
+    public function filterByField($data, $field, $value){
         return $data;
-    }
-
-    public function canListColumn($column){}
-
-    public function canShowColumn($column){}
-
-    public function canCreateColumn($column){}
-
-    public function canEditColumn($column){}
-
-    public function isSwitchable($column){
-        if(in_array($column, $this->switchable)){
-            return true;
-        }
-        return false;
-    }
-
-    static public function search($q){}
-
-    public function getRules(){
-        return [];
-    }
-
-    public function getValidatorMessages(){
-        return [];
-    }
-
-    public function getCustomValidatorCallback(){
-        return [];
-    }
-
-
-    public function newFromBuilder($attributes = [], $connection = null){
-        $model = parent::newFromBuilder($attributes, $connection);
-        foreach($this->fields->getRelations() as $key => $relation) {
-            if ($relation['type'] == Relation::BELONGS_TO) {
-                $relation = $model->belongsTo($relation['related'], $relation['foreignKey'], $relation['otherKey']);
-                $model->$key = $relation->getResults();
-                $model->setRelation($key, $relation);
-            }else if ($relation['type'] == Relation::MANY_TO_MANY || $relation['type'] == Relation::BELONGS_TO_MANY) {
-                $relation = $model->belongsToMany($relation['related'], $relation['table'], $relation['foreignKey'], $relation['otherKey']);
-                $model->$key = $relation->getResults();
-                $model->setRelation($key, $relation);
-            }else if ($relation['type'] == Relation::HAS_MANY){
-                $relation = $model->hasMany($relation['related'], $relation['foreignKey'], $relation['localKey']);
-                $model->$key = $relation->getResults();
-                $model->setRelation($key, $relation);
-            }else if ($relation['type'] == Relation::HAS_ONE){
-                $relation = $model->hasOne($relation['related'], $relation['foreignKey'], $relation['localKey']);
-                $model->$key = $relation->getResults();
-                $model->setRelation($key, $relation);
-            }
-        }
-        return $model;
-    }
-
-
-    public function getDirty(){
-        $dirty = parent::getDirty();
-        foreach(array_keys($this->relations) as $relation){
-            unset($dirty[$relation]);
-        }
-
-        return $dirty;
-    }
-
-    public function toArray(){
-         $attributes = $this->attributesToArray();
-         $arr = array_merge($attributes, $this->relationsToArray());
-         foreach($this->relations as $key => $relation){
-             unset($arr[$key]);
-         }
-         return $arr;
-    }
-
-    public function getTitle(){
-        return $this->title;
     }
 
     public function getFileStoragePath($name){
-        return 'img/'.$name.'';
+        if(!isset($this->{$name})){
+            throw new \Exception('Invalid File Name, please generate filename first');
+        }
+        return public_path($this->_name . '/' . $name).$this->{$name};
     }
 
-    public function getFileStorageName($name){
-        return $this->id;
+
+    public function getFilename($name, $extension){
+        return  $name . '_' . time() . '.' . $extension;
     }
 
-    public function getFileUrl($name){
-        return asset('upload/'.$this->getFileStoragePath($name).'/'.$this->getFileStorageName($name));
+    public function switch_field($name){
+        $this->$name = !$this->$name;
+        $this->save();
     }
-     */
 
 }

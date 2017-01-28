@@ -1,28 +1,56 @@
 <?php
 namespace Friparia\Admin;
 
-use Illuminate\Support\Fluent;
-
-class Field 
+class Field extends Fluent
 {
-    protected $_type;
-    protected $_name;
-    protected $_description;
+    protected $_extended;
+    protected $_password;
+    protected $_switchable;
+    protected $_image;
+    protected $_file;
 
     public function __construct($type, $name){
         $this->_type = $type;
         $this->_name = $name;
     }
 
-    public function __call($method, $parameters){
-        $name = "_".$method;
-        $this->$name = count($parameters) > 0 ? $parameters[0] : true;
-        return $this;
+    public function canSwitch(){
+        return $this->_switchable;
     }
+
+
+    public function isExtended(){
+        return is_null($this->_extended) ? false : $this->_extended;
+    }
+
+    public function getEnumValue($key){
+        return $this->_values[0][$key];
+    }
+
+    public function isPassword(){
+        return is_null($this->_password) ? false : $this->_password;
+    }
+
+    public function isFile(){
+        return is_null($this->_file) ? false : $this->_file;
+    }
+
+    public function isImage(){
+        return is_null($this->_image) ? false : $this->_image;
+    }
+
+    public function getOptions(){
+        if($this->_type == 'boolean'){
+            return ['1' => '是', '0' => '否'];
+        }
+        return $this->_values[0];
+    }
+
+
 
     public function getMigrationDescription(){
         $parameters = [];
-        $types = [
+        $pre_defined_types = [
             'bigIncrements',
             'bigInteger',
             'binary',
@@ -54,9 +82,20 @@ class Field
             'timestampTz',
             'uuid',
         ];
-        if(in_array($this->_type, $types)){
+        $pre_defined_functions = [
+            'default'
+        ];
+
+        $functions = [];
+        if(in_array($this->_type, $pre_defined_types)){
             $method = $this->_type;
-            return [$method, $this->_name, $parameters];
+            foreach($pre_defined_functions as $function){
+                $name = "_".$function;
+                if(isset($this->$name)){
+                    $functions[$function] = $this->$name;
+                }
+            }
+            return [$method, $this->_name, $parameters, $functions];
         }
         return false;
     }
