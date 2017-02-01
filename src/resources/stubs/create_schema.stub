@@ -1,0 +1,3 @@
+        Schema::create('DummyTable', function (Blueprint $table) {
+DummyColumns
+        });
