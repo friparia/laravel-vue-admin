@@ -26,7 +26,6 @@ class Route{
         Route::admin(Controllers\MessageController::class, 'message');
         LaravelRoute::group(['middleware' => 'web'], function() use ($prefix) {
             LaravelRoute::get($prefix.'/auth/login', '\Friparia\Admin\Controllers\AuthController@login')->name('admin.login');
-            LaravelRoute::post($prefix.'/auth/login', '\Friparia\Admin\Controllers\AuthController@dologin')->name('admin.dologin');
             LaravelRoute::get($prefix.'/auth/logout', '\Friparia\Admin\Controllers\AuthController@logout')->name('admin.logout');
             LaravelRoute::get($prefix.'/auth/forget', '\Friparia\Admin\Controllers\AuthController@forget')->name('admin.forget');
             LaravelRoute::post($prefix.'/auth/change-password', '\Friparia\Admin\Controllers\AuthController@changePassword')->name('admin.change');
