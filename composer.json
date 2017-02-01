@@ -7,6 +7,9 @@
             "email": "friparia@gmail.com"
         }
     ],
+    "require": {
+      "tymon/jwt-auth": "0.5.*"
+    },
     "autoload": {
         "classmap": [
             "src/commands"
