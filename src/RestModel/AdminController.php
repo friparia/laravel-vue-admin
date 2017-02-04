@@ -1,5 +1,5 @@
 <?php
-namespace Friparia\Admin\Controllers;
+namespace Friparia\RestModel;
 
 use Illuminate\Routing\Controller as LaravelController;
 // use Route as LaravelRoute;

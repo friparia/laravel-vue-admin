@@ -1,12 +1,6 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: friparia
- * Date: 16/3/31
- * Time: 00:31
- */
 
-namespace Friparia\Admin;
+namespace Friparia\RestModel;
 
 use Friparia\Admin\Models\User;
 use Illuminate\Console\Command;

@@ -2,7 +2,7 @@
 
 namespace Friparia\Admin\Models;
 
-use Friparia\Admin\Model;
+use Friparia\RestModel\Model;
 use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
 use Illuminate\Auth\Authenticatable;
 

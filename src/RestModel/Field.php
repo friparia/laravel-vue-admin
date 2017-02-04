@@ -1,5 +1,5 @@
 <?php
-namespace Friparia\Admin;
+namespace Friparia\RestModel;
 
 class Field extends Fluent
 {

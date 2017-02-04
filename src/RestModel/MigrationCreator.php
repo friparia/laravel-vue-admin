@@ -1,5 +1,5 @@
 <?php
-namespace Friparia\Admin;
+namespace Friparia\RestModel;
 
 use Illuminate\Database\Migrations\MigrationCreator as LaravelMigrationCreator; 
 use Illuminate\Filesystem\Filesystem;

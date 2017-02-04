@@ -1,6 +1,7 @@
 <?php
+#decrapted
 
-namespace Friparia\Admin;
+namespace Friparia\RestModel;
 
 use Route as LaravelRoute;
 

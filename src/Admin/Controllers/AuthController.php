@@ -1,25 +1,29 @@
 <?php 
 namespace Friparia\Admin\Controllers;
 
-use Illuminate\Routing\Controller as LaravelController;
+use Illuminate\Routing\Controller;
 use Auth;
 use Illuminate\Http\Request;
 use Session;
 use Friparia\Admin\Models\User;
+use JWTAuth;
 
-class AuthController extends LaravelController{
+class AuthController extends Controller{
 
     public function signin(Request $request)
     {
-        $name = $request->input('name');
+        $username = $request->input('username');
         $password = $request->input('password');
-        if(true){
-            return response()->json(['success' => true, 'token' => '1']);
+        if (! $token = JWTAuth::attempt($credentials)) {
+            return response()->json(['success' => false, 'msg' => 'invalid_credentials'], 401);
         }
-        return response()->json(['success' => false, 'msg' => 'fuck']);
+        return response()->json(['success' => true, 'token' => $token]);
     }
 
-    public function logout(Request $request){
+    public function check(Request $request){
+    }
+
+    public function signout(Request $request){
         Auth::logout();
         return redirect("/admin/auth/login")->withInput()->with('error', "注销成功！");
     }

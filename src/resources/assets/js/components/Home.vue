@@ -4,6 +4,7 @@
     Headmenu
     el-row
       el-col(:span="20",:offset="4")
+      router-view
 </template>
 <script>
 import Headmenu from './HeadMenu'

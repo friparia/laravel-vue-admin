@@ -1,6 +1,6 @@
 <?php
 
-namespace Friparia\Admin;
+namespace Friparia\RestModel;
 
 use Illuminate\Console\Command;
 use RecursiveDirectoryIterator;

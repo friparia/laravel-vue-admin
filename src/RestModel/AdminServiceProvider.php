@@ -1,6 +1,6 @@
 <?php
 
-namespace Friparia\Admin;
+namespace Friparia\RestModel;
 
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Routing\Router;
@@ -23,7 +23,7 @@ class AdminServiceProvider extends ServiceProvider
             __DIR__.'/../resources/assets/js' => resource_path('assets/friparia/admin'),
             __DIR__.'/../config/' => config_path(),
         ]);
-        $this->loadRoutesFrom(__DIR__.'/routes.php');
+        $this->loadRoutesFrom(__DIR__.'/../admin/routes.php');
         // $this->publishes([
         //     __DIR__.'/../database/migrations/' => database_path('migrations'),
         // ]);
@@ -36,6 +36,12 @@ class AdminServiceProvider extends ServiceProvider
      */
     public function register()
     {
+        $this->app->register("Tymon\JWTAuth\Providers\JWTAuthServiceProvider");
+        $loader = \Illuminate\Foundation\AliasLoader::getInstance();
+        $loader->alias('JWTAuth', 'Tymon\JWTAuth\Facades\JWTAuth');
+        $loader->alias('JWTFactory', 'Tymon\JWTAuth\Facades\JWTFactory');
+        //php artisan jwt:generate
+
         $config = $this->app['config']['auth'];
         $config["providers"]['users']['model'] = "\\Friparia\\Admin\\Models\\User";
         $this->app['config']->set('auth', $config);
@@ -43,7 +49,6 @@ class AdminServiceProvider extends ServiceProvider
             MigrateCommand::class,
             CreateAdminUserCommand::class,
             SetupCommand::class,
-            MenuCommand::class,
             PermissionCommand::class,
         ]);
     }

@@ -1,12 +1,6 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: friparia
- * Date: 16/3/31
- * Time: 00:31
- */
 
-namespace Friparia\Admin;
+namespace Friparia\RestModel;
 
 use Illuminate\Console\Command;
 
@@ -22,8 +16,6 @@ class SetupCommand extends Command
         $migrate = new Migrate("Friparia\\Admin\\Models\\Role");
         $migrate->migrate();
         $migrate = new Migrate("Friparia\\Admin\\Models\\Permission");
-        $migrate->migrate();
-        $migrate = new Migrate("Friparia\\Admin\\Models\\Menu");
         $migrate->migrate();
         $this->line("create success!");
 

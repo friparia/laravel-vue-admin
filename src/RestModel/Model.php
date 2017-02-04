@@ -1,5 +1,5 @@
 <?php
-namespace Friparia\Admin;
+namespace Friparia\RestModel;
 
 use Illuminate\Database\Eloquent\Model as LaravelModel;
 use Illuminate\Support\Fluent;

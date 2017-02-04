@@ -15,7 +15,8 @@
             "src/commands"
         ],
         "psr-4": {
-            "Friparia\\Admin\\": "src/Admin"
+            "Friparia\\RestModel\\": "src/RestModel",
+            "Friparia\\Admin\\": "src/admin"
         }
     },
     "minimum-stability": "dev"
