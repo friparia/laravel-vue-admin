@@ -10,16 +10,15 @@ class User extends Model implements AuthenticatableContract
 {
     use Authenticatable;
 
-    protected $_listable = ['cname', 'name', 'role'];
-    protected $_creatable = ['cname', 'name', 'password', 'confirm_password', 'role'];
-    protected $_searchable = ['cname', 'name'];
-    protected $_editable = ['cname', 'password', 'confirm_password', 'role'];
+    protected $_listable = ['name', 'role'];
+    protected $_creatable = ['name', 'password', 'confirm_password', 'role'];
+    protected $_searchable = ['name'];
+    protected $_editable = ['password', 'confirm_password', 'role'];
     protected $_filterabel = ['role'];
 
     protected function configure(){
-        $this->addField('string', 'name')->description("手机");
+        $this->addField('string', 'username')->description("账户");
         $this->addField('string', 'remember_token');
-        $this->addField('string', 'cname')->description("姓名");
         $this->addField('string', 'password')->description("密码")->password();
         $this->addField('boolean', 'is_admin')->default(false);
         $this->addRelation('many', 'role', 'Friparia\\Admin\\Models\\Role')->description('用户组')->descriptor('name');

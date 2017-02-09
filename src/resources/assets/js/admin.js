@@ -15,12 +15,10 @@ import App from './App.vue';
 import Home from './components/Home.vue';
 import Signin from './components/Signin.vue'
 
-//Vue.http.headers.common['X-CSRF-TOKEN'] = document.getElementsByName('csrf-token')[0].getAttribute('content');
-//Vue.http.headers.common['Authorization'] = 'Bearer ' + localStorage.getItem('token');
-
-
 Vue.use(ElementUI);
 Vue.use(VueRouter);
+
+Vue.http.headers.common['Authorization'] = 'Bearer ' + localStorage.getItem('token');
 
 var router = new VueRouter({
     routes: [{
@@ -35,6 +33,7 @@ var router = new VueRouter({
 
 router.beforeEach((to, from, next) =>{
     let token = localStorage.getItem('token');
+    Vue.http.headers.common['Authorization'] = 'Bearer ' + token
     if(to.path == '/signin'){
         next();
     }
@@ -42,29 +41,6 @@ router.beforeEach((to, from, next) =>{
         next('/signin');
     }
     next();
-    // next('/signin');
-    /**
-    if(token == 'null' || token == null){
-        Bus.$emit('login','/login');
-    }else{
-        Bus.$emit('login','/loginfo');
-    }
-    if(to.path == '/login'){
-        if(token != 'null' && token != null){
-            next('/loginfo')
-        }
-        next();
-    }else{
-        if(token != "null" && token != null){
-            Vue.http.headers.common['Authorization'] = 'Bearer ' + token 
-            next();
-        }else{
-            console.log('log')
-            Bus.$emit('login','/login')
-            next('/login');
-        }
-    }
-    */
 })
 const app = new Vue({
     router: router,

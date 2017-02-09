@@ -77,13 +77,6 @@ class UserController extends BaseController
         $user->name = $input['name'];
         $user->cname = $input['cname'];
         $user->password = \Hash::make($input['password']);
-        // ----------- TAT -----------
-        if(Auth::user()->is_manager){
-            $user->is_manager = true;
-        }elseif(Auth::user()->is_trader){
-            $user->trader_id = Auth::user()->id;
-        }
-        // ----------------------
         $user->save();
         if(isset($input['role'])){
             $data = [];
@@ -101,14 +94,6 @@ class UserController extends BaseController
         return back();
     }
 
-    // ----------- TAT -----------
-    public function filter($data){
-        if(Auth::user()->is_trader){
-            $data = $data->where('trader_id', Auth::user()->id)->where('is_trader', '=', 0);
-        }
-        return $data;
-    }
-    // ---------------
 }
 
 

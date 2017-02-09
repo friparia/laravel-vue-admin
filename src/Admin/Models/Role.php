@@ -2,31 +2,6 @@
 namespace Friparia\Admin\Models;
 use Friparia\RestModel\Model;
 class Role extends Model{
-    // protected $title = "用户组";
-    // protected $unlistable = ['description', 'created_at', 'updated_at'];
-    // protected $uneditable = ['description', 'created_at', 'updated_at'];
-    // protected $actions = [
-    //     'edit' => [
-    //         'type' => 'modal',
-    //         'color' => 'blue',
-    //         'description' => '修改',
-    //     ],
-    //     'add' => [
-    //         'type' => 'modal',
-    //         'single' => true,
-    //         'each' => false,
-    //         'color' => 'green',
-    //         'icon' => 'add',
-    //         'description' => '添加',
-    //     ],
-    // ];
-//     protected function construct(){
-//         $this->fields->string('name')->unique()->description("名称");
-//         $this->fields->string('description')->nullable();
-//         $this->fields->timestamps();
-//         $this->fields->relation('user')->belongsToMany('Friparia\\Admin\\Models\\User');
-// //        $this->fields->relation('permission')->hasManyToMany('Friparia\\Admin\\Models\\Permission');
-//     }
 
     protected $_listable = ['name'];
     protected $_creatable = ['name'];

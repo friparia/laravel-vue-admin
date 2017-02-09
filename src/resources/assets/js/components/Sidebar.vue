@@ -22,8 +22,8 @@ export default {
   },
   created() {
       var self = this;
-      $.get('/admin/menu', function(data){
-          self.menus = data;
+      this.$http.get('/admin/menu').then((res) => {
+        self.menus = res.body;
       });
   }
 };
