@@ -14,7 +14,7 @@ class MigrationCreator extends LaravelMigrationCreator{
     }
 
     protected function getStub($table, $create){
-        return $this->files->get(__DIR__.'/../stubs/migration.stub');
+        return $this->files->get(__DIR__.'/../resources/stubs/migration.stub');
     }
 
     protected function populateStub($name, $stub, $table){
@@ -34,7 +34,7 @@ class MigrationCreator extends LaravelMigrationCreator{
     }
 
     protected function populateColumnStub($method, $name, $parameters, $functions){
-        $stub = $this->files->get(__DIR__.'/../stubs/column.stub');
+        $stub = $this->files->get(__DIR__.'/../resources/stubs/column.stub');
         $stub = str_replace('DummyMethod', $method, $stub);
         $stub = str_replace('DummyName', $name, $stub);
         if(empty($parameters)){
@@ -66,7 +66,7 @@ class MigrationCreator extends LaravelMigrationCreator{
         }
         $schemas = "";
         foreach($relations as $relation){
-            $stub = $this->files->get(__DIR__.'/../stubs/create_schema.stub');
+            $stub = $this->files->get(__DIR__.'/../resources/stubs/create_schema.stub');
             $table = $this->getRelationTable($this->_model->getTable(), $relation->name);
             $stub = str_replace('DummyTable', $table, $stub);
             foreach([$this->_model->getName(), $relation->name] as $name){
@@ -84,7 +84,7 @@ class MigrationCreator extends LaravelMigrationCreator{
         }
         $schemas = [];
         foreach($relations as $relation){
-            $stub = $this->files->get(__DIR__.'/../stubs/drop_schema.stub');
+            $stub = $this->files->get(__DIR__.'/../resources/stubs/drop_schema.stub');
             $table = $this->getRelationTable($this->_model->getTable(), $relation->name);
             $stub = str_replace('DummyTable', $table, $stub);
             $schemas[] = $stub;
