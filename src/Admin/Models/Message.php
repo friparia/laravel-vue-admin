@@ -2,7 +2,7 @@
 
 namespace Friparia\Admin\Models;
 
-use Friparia\Admin\Model;
+use Friparia\RestModel\Model;
 // use PushNotification;
 
 class Message extends Model

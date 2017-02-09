@@ -2,7 +2,7 @@
 
 namespace Friparia\Admin\Models;
 
-use Friparia\Admin\Model;
+use Friparia\RestModel\Model;
 
 class Log extends Model
 {

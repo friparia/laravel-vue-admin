@@ -1,6 +1,6 @@
 <?php
 namespace Friparia\Admin\Models;
-use Friparia\Admin\Model;
+use Friparia\RestModel\Model;
 class Role extends Model{
     // protected $title = "用户组";
     // protected $unlistable = ['description', 'created_at', 'updated_at'];

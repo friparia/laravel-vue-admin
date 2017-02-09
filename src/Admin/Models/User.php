@@ -9,12 +9,13 @@ use Illuminate\Auth\Authenticatable;
 class User extends Model implements AuthenticatableContract
 {
     use Authenticatable;
-    protected $title = "员工";
+
     protected $_listable = ['cname', 'name', 'role'];
     protected $_creatable = ['cname', 'name', 'password', 'confirm_password', 'role'];
     protected $_searchable = ['cname', 'name'];
     protected $_editable = ['cname', 'password', 'confirm_password', 'role'];
     protected $_filterabel = ['role'];
+
     protected function configure(){
         $this->addField('string', 'name')->description("手机");
         $this->addField('string', 'remember_token');
@@ -60,18 +61,4 @@ class User extends Model implements AuthenticatableContract
         $uri = $segments[0];
         return $this->hasPermission(implode('.', explode('/', $uri)));
     }
-
-    // ------------ TAT ------------
-    public function trader(){
-        if($this->is_trader){
-            $trader = \App\Models\Trader::where('user_id', $this->id)->first();
-        }else{
-            $trader = \App\Models\Trader::where('user_id', $this->trader_id)->first();
-        }
-        if(is_null($trader)){
-            return '';
-        }
-        return $trader->id;
-    }
-    // ----------------------------
 }
