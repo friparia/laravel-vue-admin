@@ -41,8 +41,6 @@ export default {
           this.$message.error(res.body.msg);
           localStorage.setItem('token', null)
         }
-      },(err) => {
-        console.log(err);
       });
     }
   }

@@ -18,8 +18,6 @@ import Signin from './components/Signin.vue'
 Vue.use(ElementUI);
 Vue.use(VueRouter);
 
-Vue.http.headers.common['Authorization'] = 'Bearer ' + localStorage.getItem('token');
-
 var router = new VueRouter({
     routes: [{
         path: '/',
@@ -30,13 +28,26 @@ var router = new VueRouter({
     }]
 });
 
+Vue.http.interceptors.push(function(request, next){
+    request.headers.set('Authorization', 'Bearer ' + localStorage.getItem('token'));
+    next(function(response){
+        if(response.status == 401){
+            this.$router.push('/signin');
+        }
+        if(response.status == 500){
+            this.$message.error("服务器错误");
+        }
+        if(response.status >= 400){
+            this.$message.error(response.body.msg);
+        }
+    });
+});
 
 router.beforeEach((to, from, next) =>{
-    let token = localStorage.getItem('token');
-    Vue.http.headers.common['Authorization'] = 'Bearer ' + token
     if(to.path == '/signin'){
         next();
     }
+    let token = localStorage.getItem('token');
     if(token == null){
         next('/signin');
     }
