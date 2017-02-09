@@ -48,55 +48,6 @@ abstract class Model extends LaravelModel
     protected $guarded = [];
 
     protected $_title = "";
-    /**
-     *
-     * protected $title = "商户";
-    protected $unlistable = ['created_at', 'updated_at', 'deleted_at', 'card'];
-    protected $filterable = ['type', 'province', 'city', 'district'];
-    protected $searchable = ['name'];
-    protected $extended = ['province', 'city', 'district', 'card'];
-    protected $switchable = ['is_top', 'is_cooper'];
-    protected $order = ['name', 'type', 'province', 'city', 'district', 'is_top', 'is_cooper'];
-    public $timestamps = false;
-    protected $actions = [
-        'edit' => [
-            'type' => 'modal',
-            'color' => 'blue',
-            'description' => '修改',
-        ],
-        'add' => [
-            'type' => 'modal',
-            'single' => true,
-            'each' => false,
-            'color' => 'green',
-            'icon' => 'add',
-            'description' => '添加',
-        ],
-        'switch_is_top' => [
-            'type' => 'extend',
-        ],
-        'switch_is_cooper' => [
-            'type' => 'extend',
-        ],
-    ];
-    protected function construct(){
-        ///////
-        //$this->fields->timestamps(); 
-        //$this->fields->softDeletes();
-        ///////
-        $this->fields->string('name')->description('商户名称');
-        $this->fields->enum('type',['sport','entertainment','travel','food','other'])->description('商户类型')->values([
-            'sport' => '运动',
-            'entertainment' => '娱乐',
-            'travel' => '旅行',
-            'food' => '美食',
-            'other' => '其他',
-        ]);
-        $this->fields->boolean('is_top')->description('置顶');
-        $this->fields->boolean('is_cooper')->description('合作');
-        $this->fields->relation('district')->belongsTo('App\Models\District')->description("区县");
-    }
-     */
 
     public function __construct($attributes = [])
     {
