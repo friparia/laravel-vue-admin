@@ -34,6 +34,10 @@ abstract class Model extends LaravelModel
      */
     protected $_relations = [];
 
+    protected $_modified = [];
+
+    protected $_errors = [];
+
     /**
      * Laravel extensions
      */
@@ -168,6 +172,18 @@ abstract class Model extends LaravelModel
         return false;
     }
 
+    public function getActionFields($name){
+        $action = $this->getAction($name);
+        $fields = $action->fields;
+        $ret = [];
+        foreach($this->_fields as $field){
+            if(in_array($field->name, $fields)){
+                $ret[] = $field;
+            }
+        }
+        return $ret;
+    }
+
     public function isModalAction($name){
         if($action = $this->getAction($name)){
             if($action->type == 'modal'){
@@ -246,12 +262,29 @@ abstract class Model extends LaravelModel
         }
         return [];
     }
+
     public function getValue($name){
         return $this->{$name};
     }
 
     public function getEnumValue($field, $value){
         return $field->getEnumValue($value);
+    }
+
+    public function setModified($attributes){
+        $this->_modified = $attributes;
+    }
+
+    public function getErrors(){
+        return $this->_errors;
+    }
+
+    public function create(){
+        return parent::create($this->_modified);
+    }
+
+    public function update(array $attributes = [], array $options = []){
+        return parent::update($this->_modified);
     }
 
     public function inManyRelation($field, $id){

@@ -1,83 +1,39 @@
 <?php
 namespace Friparia\RestModel;
 
-use Illuminate\Routing\Controller as LaravelController;
+use Illuminate\Routing\Controller;
 use Illuminate\Http\Request;
 // use Validator;
 use Illuminate\Support\Str;
 // use App\Models\Log;
 
-class AdminController extends LaravelController{
+class AdminController extends Controller{
 
-    public function action(Request $request, $id){
+    public function action(Request $request, $id = null){
         list($model, $action) = explode(".", Route::currentRouteName());
-        dd($model);
-    }
-
-    public function index2(Request $request)
-    {
-        if(in_array($action, $this->actions)){
-            if(is_null($id)){
-                return $this->$action($request);
-            }else{
-                return $this->$action($request, $id);
-            }
-        }
-
-        if($id == null){
-            if($action == 'all'){
-                return $this->all($request);
-            }
-        }
         $instance = $this->instance($id);
         if(is_null($instance)){
-            $request->session()->flash("error", "结果不存在");
-            return back();
-        }else{
-            if(!$instance->isActionExisit($action)){
-                $request->session()->flash("error", '方法不存在');
-                return back();
-            }
-
-            if($instance->isModalAction($action)){
-                $controller = "\\".get_called_class();
-                $model_name = Str::snake(class_basename($this->model));
-                $view = "admin::".$action;
-                if(view()->exists($model_name.".".$action)){
-                    $view = $model_name.".".$action;
-                }
-                return view($view)->with('instance', $instance)->with('controller', $controller);;
-            }
-            if($action == 'switch'){
-                $instance->switch_field($request->input('name'));
-                $request->session()->flash("success", '操作成功');
-                return;
-            }
-            $attributes = [];
-            if($action == 'update' || $action == 'create'){
-                foreach($instance->getEditableFields() as $field){
-                    $name = $field->name;
-                    $value = $request->input($name);
-                    if($field->type == 'boolean'){
-                        $value = $value == "on";
-                    }
-                    if($field->isImage()){
-                        if ($request->hasFile($field->name)) {
-                            $instance->{$field->name} = time().'_'.$request->file($field->name)->getClientOriginalName();
-                            $request->file($field->name)->move($instance->getFileStoragePath($field->name), $instance->{$field->name});
-                        }
-                    }
-                    if(!is_null($value)){
-                        $attributes[$name] = $value;
-                        $instance->{$name} = $value;
-                    }
-                }
-            }
-            $instance->$action();
-
+            return response()->json(['success' => false, 'msg' => "结果不存在"]);
         }
-        $request->session()->flash("success", '操作成功');
-        return back();
+        $fields = $instance->getActionFields($action);
+        $attributes = [];
+        foreach($fields as $field){
+            $name = $field->name;
+            if($field->type == 'boolean'){
+                $value = $request->has($name);
+            }else{
+                $value = $request->input($name);
+            }
+            if(!is_null($value)){
+                $attributes[$name] = $value;
+            }
+        }
+        $instance->setModified($attributes);
+        if($instance->$action()){
+            return response()->json(['success' => true]);
+        }else{
+            return response()->json(['success' => false, 'msg' => $instance->getErrors()]);
+        }
     }
 
     public function index(Request $request)
