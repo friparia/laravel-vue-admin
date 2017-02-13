@@ -5,7 +5,6 @@ use Illuminate\Routing\Controller;
 use Illuminate\Http\Request;
 // use Validator;
 use Illuminate\Support\Str;
-// use App\Models\Log;
 
 class AdminController extends Controller{
 

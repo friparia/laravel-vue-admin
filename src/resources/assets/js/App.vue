@@ -4,18 +4,28 @@
 </template>
 <script>
 export default {
+  name: 'app',
+  components:{
+  }
 }
 </script>
-<style lang="stylus">
-body,
-html
-  height 100%
-  font-size 20px
-body
-  font-family: "Helvetica Neue",Helvetica,"PingFang SC","Hiragino Sans GB","Microsoft YaHei","微软雅黑",Arial,sans-serif
-  -webkit-font-smoothing: antialiased
-  -moz-osx-font-smoothing: grayscale
-  padding 0
-  margin 0
-  background-color rgb(244,244,244)
+<style>
+body {
+  /*background-color: #324057;*/
+  margin: 0px;
+  padding: 0px;
+  /*background: url(assets/bg1.jpg) center !important;
+  background-size: cover;*/
+background: #1F2D3D;
+font-family: Helvetica Neue, Helvetica, PingFang SC, Hiragino Sans GB, Microsoft YaHei, SimSun, sans-serif;
+/*font-weight: 400;*/
+font-size:14px;
+-webkit-font-smoothing: antialiased;
+}
+#app {
+  position: absolute;
+  top: 0px;
+  bottom: 0px;
+  width: 100%;
+}
 </style>

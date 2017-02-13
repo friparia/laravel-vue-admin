@@ -14,6 +14,7 @@ import ElementUI from 'element-ui';
 import App from './App.vue';
 import Home from './components/Home.vue';
 import Signin from './components/Signin.vue'
+import Table from './components/Table.vue'
 
 Vue.use(ElementUI);
 Vue.use(VueRouter);
@@ -21,7 +22,10 @@ Vue.use(VueRouter);
 var router = new VueRouter({
     routes: [{
         path: '/',
-        component: Home
+        component: Home,
+        children: [
+            { path: '/user', component: Table}
+        ]
     },{
         path: '/signin',
         component: Signin
@@ -34,12 +38,12 @@ Vue.http.interceptors.push(function(request, next){
         if(response.status == 401){
             this.$router.push('/signin');
         }
-        if(response.status == 500){
-            this.$message.error("服务器错误");
-        }
-        if(response.status >= 400){
-            this.$message.error(response.body.msg);
-        }
+        // if(response.status == 500){
+        //     this.$message.error("服务器错误");
+        // }
+        // if(response.status >= 400){
+        //     this.$message.error(response.body.msg);
+        // }
     });
 });
 

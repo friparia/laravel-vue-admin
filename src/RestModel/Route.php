@@ -45,7 +45,7 @@ class Route extends LaravelRoute{
      * @param string $classname
      * @param string $prefix
      */
-    public static function rest($model, $name = "", $classname = "", $prefix = 'admin'){
+    public static function rest($model, $prefix = "admin", $name = "", $classname = ''){
         if($name == "") {
             $name = Str::snake(class_basename($model));
         }
