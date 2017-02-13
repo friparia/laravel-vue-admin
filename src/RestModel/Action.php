@@ -3,29 +3,22 @@ namespace Friparia\RestModel;
 
 class Action extends Fluent
 {
-    protected $_color = 'default';
-    protected $_icon;
-    protected $_single;
-    protected $_each;
+    protected $_method = 'GET';
+    protected $_style = [];
 
-    public function __get($name){
-        $name = "_".$name;
-        if(in_array($name, ['_description', '_color', '_icon'])){
-            $array = $this->$name;
-            return $array[0];
-        }
-        if(!is_null($this->$name)){
-            return $this->$name;
-        }
-        return null;
-    }
+    protected $_single = false;
+    protected $_each = false;
+
+    protected $_form = false;
+
+    protected $_fields = [];
 
     public function isSingle(){
-        return is_null($this->_single) ? false : $this->_single;
+        return $this->_single;
     }
 
     public function isEach(){
-        return is_null($this->_each) ? false : $this->_each;
+        return $this->_each;
     }
 }
 

@@ -9,26 +9,18 @@ abstract class Model extends LaravelModel
 {
 
     protected $_name;
+
     /**
      * List page configurations
      */
-    protected $_listable = [];
-    protected $_filterable = [];
-    protected $_searchable = [];
-    protected $_switchable = [];
-
-
-    /**
-     * Create or edit page  configurations
-     */
-    protected $_creatable = [];
-    protected $_editable = [];
+    protected $_list_fields = [];
+    protected $_search_fields = [];
+    protected $_filter_fields = [];
 
     /**
      * Model fields defenition
      */
     protected $_fields = [];
-
 
     /**
      * Model actions
@@ -54,7 +46,6 @@ abstract class Model extends LaravelModel
         parent::__construct($attributes);
         $this->configure();
         $this->_name = Str::snake(class_basename($this));
-        // $this->fields = new Blueprint($this->getTable());
     }
 
     protected function configure(){
@@ -76,6 +67,7 @@ abstract class Model extends LaravelModel
         $relations = $this->_relations;
         $relations[] = $relation;
         $this->_relations = $relations;
+        //TODO $this->addFields();
         return $relation;
     }
 
@@ -87,16 +79,27 @@ abstract class Model extends LaravelModel
         return $action;
     }
 
-    public function createMigrationFile(){
-        $creator = new MigrationCreator($this);
-        $path = database_path().'/migrations';
-        $creator->create($this->_name, $path, $this->getTable());
+    public function getConfiguration(){
+        $actions = [];
+        foreach($this->_actions as $action){
+            $actions[$action->name] = [
+                'type' => $action->type,
+                'method' => $action->method,
+                'style' => $action->style,
+                'fields' => $action->fields,
+                'is_single' => $action->single,
+                'is_form' => $action->form,
+                'is_each' => $action->each,
+            ];
+        }
+        return [
+            'actions' => $actions,
+        ];
     }
 
     public function getName(){
         return $this->_name;
     }
-
 
     public function getFields()
     {
@@ -106,6 +109,11 @@ abstract class Model extends LaravelModel
     public function getRelations()
     {
         return $this->_relations;
+    }
+
+    public function getActions()
+    {
+        return $this->_actions;
     }
 
     public function getManyRelations(){
@@ -132,76 +140,11 @@ abstract class Model extends LaravelModel
         return $fields;
     }
 
-    public function getListableFields(){
+    public function getListFields(){
         $fields = [];
         foreach($this->_fields as $field){
-            if(in_array($field->name, $this->_listable)){
+            if(in_array($field->name, $this->_list_fields)){
                 $fields[] = $field;
-            }
-        }
-        foreach($this->_relations as $relation){
-            if(in_array($relation->name, $this->_listable)){
-                $fields[] = $relation;
-            }
-        }
-        return $fields;
-    }
-
-    public function getFilterableFields(){
-        $fields = [];
-        foreach($this->_fields as $field){
-            if(in_array($field->name, $this->_filterable)){
-                $fields[] = $field;
-            }
-        }
-        foreach($this->_relations as $relation){
-            if(in_array($relation->name, $this->_filterable)){
-                $fields[] = $relation;
-            }
-        }
-        return $fields;
-    }
-
-    public function getCreatableFields(){
-        $fields = [];
-        foreach($this->_fields as $field){
-            if(in_array($field->name, $this->_creatable)){
-                $fields[] = $field;
-            }
-        }
-        foreach($this->_relations as $relation){
-            if(in_array($relation->name, $this->_creatable)){
-                $fields[] = $relation;
-            }
-        }
-        return $fields;
-    }
-
-    public function getSearchableFields(){
-        $fields = [];
-        foreach($this->_fields as $field){
-            if(in_array($field->name, $this->_searchable)){
-                $fields[] = $field;
-            }
-        }
-        foreach($this->_relations as $relation){
-            if(in_array($relation->name, $this->_searchable)){
-                $fields[] = $relation;
-            }
-        }
-        return $fields;
-    }
-
-    public function getEditableFields(){
-        $fields = [];
-        foreach($this->_fields as $field){
-            if(in_array($field->name, $this->_editable)){
-                $fields[] = $field;
-            }
-        }
-        foreach($this->_relations as $relation){
-            if(in_array($relation->name, $this->_editable)){
-                $fields[] = $relation;
             }
         }
         return $fields;
@@ -212,6 +155,7 @@ abstract class Model extends LaravelModel
     }
 
     public function isActionExisit($action){
+        //@todo
         return in_array($action, $this->getAllActions());
     }
 
@@ -231,14 +175,6 @@ abstract class Model extends LaravelModel
             }
         }
         return false;
-    }
-
-    public function getAllActions(){
-        $actions = ['create', 'update', 'delete', 'switch'];
-        foreach($this->_actions as $action){
-            $actions[] = $action->name;
-        }
-        return $actions;
     }
 
     public function getEachActions(){
@@ -333,6 +269,7 @@ abstract class Model extends LaravelModel
         return $data;
     }
 
+    //TODO
     public function getFileStoragePath($name){
         if(!isset($this->{$name})){
             throw new \Exception('Invalid File Name, please generate filename first');
@@ -340,14 +277,9 @@ abstract class Model extends LaravelModel
         return public_path($this->_name . '/' . $name).$this->{$name};
     }
 
-
-    public function getFilename($name, $extension){
-        return  $name . '_' . time() . '.' . $extension;
+    public function createMigrationFile(){
+        $creator = new MigrationCreator($this);
+        $path = database_path().'/migrations';
+        $creator->create($this->_name, $path, $this->getTable());
     }
-
-    public function switch_field($name){
-        $this->$name = !$this->$name;
-        $this->save();
-    }
-
 }

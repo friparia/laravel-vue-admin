@@ -10,11 +10,9 @@ class User extends Model implements AuthenticatableContract
 {
     use Authenticatable;
 
-    protected $_listable = ['name', 'role'];
-    protected $_creatable = ['name', 'password', 'confirm_password', 'role'];
-    protected $_searchable = ['name'];
-    protected $_editable = ['password', 'confirm_password', 'role'];
-    protected $_filterabel = ['role'];
+    protected $_list_fields = ['name', 'role'];
+    protected $_search_fields = ['name'];
+    protected $_filter_fields = ['role'];
 
     protected function configure(){
         $this->addField('string', 'username')->description("账户");
@@ -23,8 +21,9 @@ class User extends Model implements AuthenticatableContract
         $this->addField('boolean', 'is_admin')->default(false);
         $this->addRelation('many', 'role', 'Friparia\\Admin\\Models\\Role')->description('用户组')->descriptor('name');
         $this->addField('string', 'confirm_password')->description("密码确认")->extended()->password();
-        $this->addAction('modal', 'add')->single()->color('success')->description("添加");
-        $this->addAction('modal', 'edit')->each()->color('info')->description("编辑");
+
+        $this->addAction('modal', 'create')->form()->single()->style(['success'])->description("添加")->fields(['name', 'password', 'confirm_password', 'role'])->method('POST');
+        $this->addAction('modal', 'update')->form()->each()->style(['info'])->description("编辑")->fields(['password', 'confirm_password', 'role'])->method('POST');
     }
 
     public function role(){

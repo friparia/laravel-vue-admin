@@ -9,11 +9,6 @@ class Field extends Fluent
     protected $_image;
     protected $_file;
 
-    public function __construct($type, $name){
-        $this->_type = $type;
-        $this->_name = $name;
-    }
-
     public function canSwitch(){
         return $this->_switchable;
     }

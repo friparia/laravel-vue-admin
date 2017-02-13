@@ -2,7 +2,6 @@
 namespace Friparia\RestModel;
 
 use Illuminate\Routing\Controller as LaravelController;
-// use Route as LaravelRoute;
 use Illuminate\Http\Request;
 // use Validator;
 use Illuminate\Support\Str;
@@ -10,8 +9,12 @@ use Illuminate\Support\Str;
 
 class AdminController extends LaravelController{
 
-    protected $actions = [];
-    public function index(Request $request, $action, $id = null)
+    public function action(Request $request, $id){
+        list($model, $action) = explode(".", Route::currentRouteName());
+        dd($model);
+    }
+
+    public function index2(Request $request)
     {
         if(in_array($action, $this->actions)){
             if(is_null($id)){
@@ -77,58 +80,48 @@ class AdminController extends LaravelController{
         return back();
     }
 
-    public function add(Request $request){
-        $instance = $this->instance();
-        $controller = "\\".get_called_class();
-        return view('admin::add', compact('instance', 'controller'));
-    }
-
-    public function all(Request $request)
+    public function index(Request $request)
     {
         $data = $instance = $this->instance();
-        $q = $request->input('q');
-        foreach ($instance->getFilterableFields() as $field) {
-            $value = $request->input($field->name);
-            if ($value != '') {
-                if ($field->type == 'many') {
-                    $data = $data->whereHas($field->name, function ($query) use ($value) {
-                        $query->where('id', $value);
-                    });
-                } else if ($field->isExtended()) {
-                    $data = $instance->filterByField($data, $field, $value);
-                } else {
-                    $data = $data->where($field->name, $value);
-                }
-            }
-        }
-        foreach ($instance->getSearchableFields() as $field) {
-            $data = $data->where(function ($query) use ($q, $instance, $field) {
-                foreach ($instance->getSearchableFields() as $field) {
-                    if ($field->type == 'string') {
-                        $query->orWhere($field->name, 'LIKE', "%" . $q . "%");
-                    }
-                }
-            });
-            if($field->type == 'belong'){
-                $data = $field->search($data, $instance, $q);
-            }
-
-        }
-        $data = $this->filter($data);
+        // foreach ($instance->getFilterableFields() as $field) {
+        //     $value = $request->input($field->name);
+        //     if ($value != '') {
+        //         if ($field->type == 'many') {
+        //             $data = $data->whereHas($field->name, function ($query) use ($value) {
+        //                 $query->where('id', $value);
+        //             });
+        //         } else if ($field->isExtended()) {
+        //             $data = $instance->filterByField($data, $field, $value);
+        //         } else {
+        //             $data = $data->where($field->name, $value);
+        //         }
+        //     }
+        // }
+        // foreach ($instance->getSearchableFields() as $field) {
+        //     $data = $data->where(function ($query) use ($q, $instance, $field) {
+        //         foreach ($instance->getSearchableFields() as $field) {
+        //             if ($field->type == 'string') {
+        //                 $query->orWhere($field->name, 'LIKE', "%" . $q . "%");
+        //             }
+        //         }
+        //     });
+        //     if($field->type == 'belong'){
+        //         $data = $field->search($data, $instance, $q);
+        //     }
+        //
+        // }
         $data = $data->orderBy('id', 'desc')->paginate(20);
-        $controller = "\\".get_called_class();
-        return view('admin::all', compact('data', 'instance', 'controller'));
+        return response()->json(compact('data'));
     }
 
     public function filter($data){
         return $data;
     }
 
-
     protected function instance($id = null){
-        $model = $this->model;
+        list($model, $name) = explode(".", Route::currentRouteName());
         if(is_null($id)){
-            $instance = new $model([]);
+            $instance = new $model;
         }else{
             $instance = $model::find($id);
         }
