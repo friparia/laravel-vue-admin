@@ -18,8 +18,8 @@ el-row.panel
           el-submenu(:index="index + ''", v-if="menu.hasOwnProperty('submenus')")
             template(slot="title") {{ menu.name }}
             template(v-for="(submenu, subindex) in menu.submenus")
-              el-menu-item(:index ="submenu.url") {{ submenu.name }}
-          el-menu-item(:index = "menu.url", v-else) {{ menu.name }}
+              el-menu-item(:index="submenu.url") {{ submenu.name }}
+          el-menu-item(:index="menu.url", v-else) {{ menu.name }}
     section.panel-c-c
       .grid-content.bg-purple-light
         el-col(:span="24")
@@ -30,7 +30,7 @@ el-row.panel
 </template>
 <script>
 export default {
-  name: 'home',
+  name: 'Home',
   data () {
     return {
       name: "test",

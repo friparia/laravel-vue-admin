@@ -86,18 +86,17 @@ abstract class Model extends LaravelModel
     public function getConfiguration(){
         $actions = [];
         foreach($this->_actions as $action){
-            $actions[$action->name] = [
-                'type' => $action->type,
-                'method' => $action->method,
-                'style' => $action->style,
-                'fields' => $action->fields,
-                'is_single' => $action->single,
-                'is_form' => $action->form,
-                'is_each' => $action->each,
-            ];
+            $actions[] = $action->toArray();
+        }
+        $listFields = [];
+        foreach($this->_fields as $field){
+            if(in_array($field->name, $this->_list_fields)){
+                $listFields[] = $field->toArray();
+            }
         }
         return [
             'actions' => $actions,
+            'listFields' => $listFields,
         ];
     }
 

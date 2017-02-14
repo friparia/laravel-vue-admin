@@ -20,5 +20,20 @@ class Action extends Fluent
     public function isEach(){
         return $this->_each;
     }
+
+    public function toArray(){
+        return [
+                'name' => $this->name,
+                'description' => $this->description,
+                'type' => $this->type,
+                'method' => $this->method,
+                'style' => $this->style,
+                'fields' => $this->fields,
+                'is_single' => $this->single,
+                'is_form' => $this->form,
+                'is_each' => $this->each,
+            ];
+
+    }
 }
 

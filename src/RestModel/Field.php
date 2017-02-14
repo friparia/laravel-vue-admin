@@ -95,4 +95,12 @@ class Field extends Fluent
         return false;
     }
 
+    public function toArray(){
+        return [
+            'name' => $this->name,
+            'description' => $this->description,
+            'type' => $this->type,
+        ];
+    }
+
 }

@@ -14,7 +14,7 @@ import ElementUI from 'element-ui';
 import App from './App.vue';
 import Home from './components/Home.vue';
 import Signin from './components/Signin.vue'
-import Table from './components/Table.vue'
+import List from './components/List.vue'
 
 Vue.use(ElementUI);
 Vue.use(VueRouter);
@@ -23,9 +23,9 @@ var router = new VueRouter({
     routes: [{
         path: '/',
         component: Home,
-        children: [
-            { path: '/user', component: Table}
-        ]
+        // children: [
+        //     { path: '/user', component: List, name: 'user'}
+        // ]
     },{
         path: '/signin',
         component: Signin

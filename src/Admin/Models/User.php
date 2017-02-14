@@ -10,8 +10,8 @@ class User extends Model implements AuthenticatableContract
 {
     use Authenticatable;
 
-    protected $_list_fields = ['name', 'role'];
-    protected $_search_fields = ['name'];
+    protected $_list_fields = ['username', 'role'];
+    protected $_search_fields = ['username'];
     protected $_filter_fields = ['role'];
 
     protected function configure(){
