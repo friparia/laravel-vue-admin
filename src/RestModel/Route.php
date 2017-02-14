@@ -62,10 +62,10 @@ class Route extends LaravelRoute{
             if($action->isEach()){
                 $url .= "/{id}";
             }
-            self::$method($url, "Friparia\\RestModel\\AdminController@action")->name($model.'.'.$action->name);
+            self::$method($url, "\\Friparia\\RestModel\\AdminController@action")->name($model.'.'.$action->name);
         }
-        self::get($prefix.'/'.$name.'/{id}', "Friparia\\RestModel\AdminController@index")->name($model.".show");
-        self::get($prefix.'/'.$name, "Friparia\\RestModel\AdminController@index")->name($model.".index");
+        self::get($prefix.'/'.$name.'/{id}', "\\Friparia\\RestModel\AdminController@index")->name($model.".show");
+        self::get($prefix.'/'.$name, "\\Friparia\\RestModel\AdminController@index")->name($model.".index");
     }
 
 }

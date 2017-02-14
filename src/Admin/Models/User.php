@@ -16,7 +16,7 @@ class User extends Model implements AuthenticatableContract
 
     protected function configure(){
         $this->addField('string', 'username')->description("账户");
-        $this->addField('string', 'remember_token');
+        $this->addField('string', 'remember_token')->nullable();
         $this->addField('string', 'password')->description("密码")->password();
         $this->addField('boolean', 'is_admin')->default(false);
         $this->addRelation('many', 'role', 'Friparia\\Admin\\Models\\Role')->description('用户组')->descriptor('name');
