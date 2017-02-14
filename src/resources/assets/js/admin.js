@@ -23,9 +23,9 @@ var router = new VueRouter({
     routes: [{
         path: '/',
         component: Home,
-        // children: [
-        //     { path: '/user', component: List, name: 'user'}
-        // ]
+        children: [
+            { path: '/user', component: List, name: 'user'},
+        ]
     },{
         path: '/signin',
         component: Signin

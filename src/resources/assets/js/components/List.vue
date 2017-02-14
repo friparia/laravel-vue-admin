@@ -4,7 +4,7 @@ section
     el-form
       el-form-item
         template(v-for="action in singleActions")
-          el-button(type="primary") {{ action.description }}
+          el-button(type="primary", @click="handleSingle(action)") {{ action.description }}
   template
     el-table(:data="data")
       el-table-column(v-for="field in listFields", :prop="field.name", :label="field.description")
@@ -12,10 +12,10 @@ section
         span
           el-button(v-for="action in eachActions", @click="handleEach(action, row)") {{ action.description }}
   el-col.toolbar(:span="24", style="padding-bottom:10px;")
-  el-dialog(:title="formTitle", v-model="formVisible")
-    el-form(:model="form", label-width="80px", :rules="formRules", ref="form")
-      template(v-for="fields in formFields")
-        el-form-item(:label="field.description", :prop="field.name")
+  //el-dialog(:title="formTitle", v-model="formVisible")
+    //el-form(:model="form", label-width="80px", :rules="formRules", ref="form")
+      //template(v-for="fields in formFields")
+        //el-form-item(:label="field.description", :prop="field.name")
       
 
 </template>
@@ -56,12 +56,15 @@ export default {
   },
   methods: {
     handleEach(action, obj){
-      if(action.type == 'modal'){
+      if(action.type == 'url'){
       }
       console.log(action);
       console.log(obj);
     },
     handleSingle(action){
+      if(action.type == 'url'){
+        this.$router.push('/' + this.name + '/' + action.name);
+      }
     },
   },
 };

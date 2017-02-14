@@ -22,7 +22,7 @@ class User extends Model implements AuthenticatableContract
         $this->addRelation('many', 'role', 'Friparia\\Admin\\Models\\Role')->description('用户组')->descriptor('name');
         $this->addField('string', 'confirm_password')->description("密码确认")->extended()->password();
 
-        $this->addAction('modal', 'create')->form()->single()->style(['success'])->description("添加")->fields(['username', 'password', 'confirm_password', 'role'])->method("POST");
+        $this->addAction('url', 'create')->form()->single()->style(['success'])->description("添加")->fields(['username', 'password', 'confirm_password', 'role'])->method("POST");
         $this->addAction('modal', 'update')->form()->each()->style(['info'])->description("编辑")->fields(['password', 'confirm_password', 'role'])->method('POST');
     }
 
