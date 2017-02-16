@@ -22,23 +22,9 @@ First, add a line in the section of `require` in `composer.json` file:
 
     "friparia/admin": "dev-master"
     
-and run `composer install`, or, you can execute the following command:
-    
-
-
-Then, add a line of service provider in `config/app.php`:
-    
-
-
-In public directory run:
-    
-    bower install admin-lte
-
-
-
-
+and run `composer update`, or, you can execute the following command:
 
 1. composer require "friparia/admin:dev-master"
 2. Friparia\Admin\AdminServiceProvider::class,
 3. npm i element-ui -S
-
+4. webpack.mix.js
