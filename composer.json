@@ -16,7 +16,7 @@
         ],
         "psr-4": {
             "Friparia\\RestModel\\": "src/RestModel",
-            "Friparia\\Admin\\": "src/admin"
+            "Friparia\\Admin\\": "src/Admin"
         }
     },
     "minimum-stability": "dev"
