@@ -15,6 +15,7 @@ import App from './App.vue';
 import Home from './components/Home.vue';
 import Signin from './components/Signin.vue'
 import List from './components/List.vue'
+import { Message } from 'element-ui';
 
 Vue.use(ElementUI);
 Vue.use(VueRouter);
@@ -33,17 +34,17 @@ var router = new VueRouter({
 });
 
 Vue.http.interceptors.push(function(request, next){
-    request.headers.set('Authorization', 'Bearer ' + localStorage.getItem('token'));
+    request.headers.set('Authorization', 'Bearer ' + sessionStorage.getItem('token'));
     next(function(response){
         if(response.status == 401){
             this.$router.push('/signin');
         }
-        // if(response.status == 500){
-        //     this.$message.error("服务器错误");
-        // }
-        // if(response.status >= 400){
-        //     this.$message.error(response.body.msg);
-        // }
+        if(response.status == 500){
+            Message.error("服务器错误");
+        }
+        if(response.status >= 400){
+            Message.error(response.body.msg);
+        }
     });
 });
 
@@ -51,7 +52,7 @@ router.beforeEach((to, from, next) =>{
     if(to.path == '/signin'){
         next();
     }
-    let token = localStorage.getItem('token');
+    let token = sessionStorage.getItem('token');
     if(token == null){
         next('/signin');
     }

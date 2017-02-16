@@ -31,15 +31,13 @@ export default {
         password: this.login.password,
       }).then((res) => {
         if(res.body.success == true){
-          localStorage.setItem('token', res.body.token);
-          this.$message({
-            message: '恭喜你，登录成功',
-            type: 'success'
-          });
+          sessionStorage.setItem('token', res.body.token);
+          sessionStorage.setItem('username', res.body.username);
+          this.$message.success('恭喜你，登录成功');
           this.$router.push('/')
         }else{
           this.$message.error(res.body.msg);
-          localStorage.setItem('token', null)
+          sessionStorage.setItem('token', null)
         }
       });
     }

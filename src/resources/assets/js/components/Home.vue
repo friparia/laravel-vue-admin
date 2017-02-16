@@ -9,7 +9,7 @@ el-row.panel
         span.el-dark-link 
           | {{ name }}
         el-dropdown-menu(slot="dropdown")
-          el-dropdown-item(command="logout")
+          el-dropdown-item(command="signout")
             | 退出登陆
   el-col.panel-center(:span="24")
     aside(style="width:230px;")
@@ -33,7 +33,7 @@ export default {
   name: 'Home',
   data () {
     return {
-      name: "test",
+      name: sessionStorage.getItem('username'),
       menus: [
       ]
     };
@@ -44,7 +44,15 @@ export default {
       });
   },
   methods: {
-    logOut: function(){
+    signout: function(){
+      sessionStorage.removeItem('token');
+      sessionStorage.removeItem('username');
+      this.$http.post('/admin/auth/signout').then((res) => {
+        if(res.body.success){
+          this.$message.success("退出成功");
+          this.$router.push("/");
+        }
+      });
     }
   },
 }
