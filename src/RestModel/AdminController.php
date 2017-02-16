@@ -29,7 +29,7 @@ class AdminController extends Controller{
         }
         $instance->setModified($attributes);
         if($instance->$action()){
-            return response()->json(['success' => true]);
+            return response()->json(['success' => true] + $instance->getReturn());
         }else{
             return response()->json(['success' => false, 'msg' => $instance->getErrors()]);
         }

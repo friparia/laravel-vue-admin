@@ -3,6 +3,9 @@ namespace Friparia\RestModel;
 
 class Field extends Fluent
 {
+    //TODO migration enum
+    protected $_values = [];
+
     protected $_extended;
     protected $_password;
     protected $_switchable;
@@ -100,6 +103,7 @@ class Field extends Fluent
             'name' => $this->name,
             'description' => $this->description,
             'type' => $this->type,
+            'values' => $this->values,
         ];
     }
 
