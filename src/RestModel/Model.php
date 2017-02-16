@@ -38,6 +38,8 @@ abstract class Model extends LaravelModel
 
     protected $_errors = [];
 
+    protected $_return = [];
+
     /**
      * Laravel extensions
      */
@@ -276,6 +278,10 @@ abstract class Model extends LaravelModel
 
     public function getErrors(){
         return $this->_errors;
+    }
+
+    public function getReturn(){
+        return $this->_return;
     }
 
     public function create(){
