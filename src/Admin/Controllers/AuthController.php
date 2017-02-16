@@ -22,7 +22,7 @@ class AuthController extends Controller{
         if (! $token = JWTAuth::attempt($credentials)) {
             return response()->json(['success' => false, 'msg' => '用户名或密码错误'], 401);
         }
-        return response()->json(['success' => true, 'token' => $token, 'username' => $username]);
+        return response()->json(['success' => true, 'token' => $token, 'username' => $request->input('username')]);
     }
 
     public function signout(Request $request){
