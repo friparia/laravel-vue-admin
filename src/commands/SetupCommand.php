@@ -1,6 +1,7 @@
 <?php
 
-namespace Friparia\RestModel;
+namespace Friparia\Admin;
+use Friparia\RestModel\Migrator;
 
 use Illuminate\Console\Command;
 
@@ -11,14 +12,13 @@ class SetupCommand extends Command
     protected $description = "set up admin with role based access control";
 
     public function handle(){
-        $migrate = new Migrate("Friparia\\Admin\\Models\\User");
-        $migrate->migrate();
-        $migrate = new Migrate("Friparia\\Admin\\Models\\Role");
-        $migrate->migrate();
-        $migrate = new Migrate("Friparia\\Admin\\Models\\Permission");
-        $migrate->migrate();
+        $migrator = new Migrator(new \Friparia\Admin\Models\User);
+        $migrator->createMigrationFile();
+        $migrator = new Migrator(new \Friparia\Admin\Models\Role);
+        $migrator->createMigrationFile();
+        $migrator = new Migrator(new \Friparia\Admin\Models\Permission);
+        $migrator->createMigrationFile();
         $this->line("create success!");
-
     }
 
 }

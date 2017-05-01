@@ -34,6 +34,7 @@ abstract class Model extends LaravelModel
      */
     protected $_relations = [];
 
+
     protected $_modified = [];
 
     protected $_errors = [];
@@ -73,7 +74,6 @@ abstract class Model extends LaravelModel
         $relations = $this->_relations;
         $relations[] = $relation;
         $this->_relations = $relations;
-        //TODO $this->addFields();
         return $relation;
     }
 
@@ -284,7 +284,7 @@ abstract class Model extends LaravelModel
         return $this->_return;
     }
 
-    public function create(){
+    static public function create(array $attributes = []){
         return parent::create($this->_modified);
     }
 
@@ -313,11 +313,5 @@ abstract class Model extends LaravelModel
             throw new \Exception('Invalid File Name, please generate filename first');
         }
         return public_path($this->_name . '/' . $name).$this->{$name};
-    }
-
-    public function createMigrationFile(){
-        $creator = new MigrationCreator($this);
-        $path = database_path().'/migrations';
-        $creator->create($this->_name, $path, $this->getTable());
     }
 }

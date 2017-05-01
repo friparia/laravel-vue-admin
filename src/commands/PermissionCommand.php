@@ -1,6 +1,6 @@
 <?php
 
-namespace Friparia\RestModel;
+namespace Friparia\Admin;
 
 use Friparia\Admin\Models\Permission;
 use Illuminate\Console\Command;

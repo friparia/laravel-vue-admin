@@ -3,7 +3,6 @@ namespace Friparia\RestModel;
 
 class Field extends Fluent
 {
-    //TODO migration enum
     protected $_values = [];
 
     protected $_extended;

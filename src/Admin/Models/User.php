@@ -15,11 +15,11 @@ class User extends Model implements AuthenticatableContract
     protected $_filter_fields = ['role'];
 
     protected function configure(){
-        $this->addField('string', 'username')->description("账户");
+        $this->addField('string', 'username')->description("用户名");
         $this->addField('string', 'remember_token')->nullable();
         $this->addField('string', 'password')->description("密码")->password();
         $this->addField('boolean', 'is_admin')->default(false);
-        $this->addRelation('many', 'role', 'Friparia\\Admin\\Models\\Role')->description('用户组')->descriptor('name');
+        $this->addRelation('many', 'role', Role::class)->description('用户组')->descriptor('name');
         $this->addField('string', 'confirm_password')->description("密码确认")->extended()->password();
 
         $this->addAction('url', 'create')->form()->single()->style(['success'])->description("添加")->fields(['username', 'password', 'confirm_password', 'role'])->method("POST");

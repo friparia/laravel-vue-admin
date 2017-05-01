@@ -1,12 +1,13 @@
 <?php
 
-namespace Friparia\RestModel;
+namespace Friparia\Admin;
 
 use Illuminate\Console\Command;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
 use RegexIterator;
 use DB;
+use Friparia\RestModel\Migrator;
 
 class MigrateCommand extends Command
 {
@@ -16,8 +17,8 @@ class MigrateCommand extends Command
 
     public function handle(){
         $model = $this->argument('model');
-        $instance = new $model;
-        $instance->createMigrationFile();
+        $migrator = new Migrator(new $model);
+        $migrator->createMigrationFile();
     }
 }
 
