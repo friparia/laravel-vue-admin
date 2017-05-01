@@ -27,4 +27,6 @@ and run `composer update`, or, you can execute the following command:
 1. composer require "friparia/admin:dev-master"
 2. Friparia\Admin\AdminServiceProvider::class,
 3. npm i element-ui -S
+4. vendor:publish
 4. webpack.mix.js
+
