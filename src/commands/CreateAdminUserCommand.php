@@ -20,10 +20,7 @@ class CreateAdminUserCommand extends Command
             $this->error("Please enter same password!");
         }
         $user = new User;
-        $user->setModified(['username' => $name, 'password' => Hash::make($password), 'is_admin' => 1]);
-        $user->create();
-        $this->line("create success!");
-
+        $user->create(['username' => $name, 'password' => Hash::make($password), 'is_admin' => 1]);
+        $this->line("create succeeded!");
     }
-
 }

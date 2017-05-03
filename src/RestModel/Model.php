@@ -284,14 +284,6 @@ abstract class Model extends LaravelModel
         return $this->_return;
     }
 
-    static public function create(array $attributes = []){
-        return parent::create($this->_modified);
-    }
-
-    public function update(array $attributes = [], array $options = []){
-        return parent::update($this->_modified);
-    }
-
     public function inManyRelation($field, $id){
         if($field->type == 'many'){
             foreach($this->getValue($field->name) as $element){

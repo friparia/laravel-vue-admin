@@ -21,8 +21,9 @@ class AdminServiceProvider extends ServiceProvider
         $this->publishes([
             __DIR__.'/../resources/assets/' => public_path(),
             __DIR__.'/../config/' => config_path(),
-            __DIR__.'/../resources/views' => resource_path('views/admin'),
+            //__DIR__.'/../resources/views' => resource_path('views/admin'),
         ]);
+        $this->loadViewsFrom(__DIR__.'/../resources/views', 'admin');
     }
 
     /**
