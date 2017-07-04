@@ -59,12 +59,12 @@ class MigrationCreator extends LaravelMigrationCreator{
         }
         return $stub;
     }
-    
+
     protected function populateRelationCreateStub($relations){
         if(empty($relations)){
             return "";
         }
-        $schemas = "";
+        $schemas = [];
         foreach($relations as $relation){
             $stub = $this->files->get(__DIR__.'/../resources/stubs/create_schema.stub');
             $table = $this->getRelationTable($this->_model->getTable(), $relation->name);

@@ -2,19 +2,15 @@
 return [
     [
         'name' => '首页',
-        'url' => '/admin',
+        'url' => '/',
     ],
     [
-        'name' => '子菜单',
-        'url' => '/aa',
+        'name' => '用户管理',
+        'url' => '/user',
         'submenus' => [
             [
-                'name' => '子菜单1',
-                'url' => '/sub1',
-            ],
-            [
-                'name' => '子菜单2',
-                'url' => '/sub2',
+                'name' => '列表',
+                'url' => '/user',
             ],
         ]
     ]

@@ -15,10 +15,10 @@ section
         span
           el-button(v-for="action in eachActions", @click="handleEach(action, row)") {{ action.description }}
   el-col.toolbar(:span="24", style="padding-bottom:10px;")
-  //el-dialog(:title="formTitle", v-model="formVisible")
-    //el-form(:model="form", label-width="80px", :rules="formRules", ref="form")
-      //template(v-for="fields in formFields")
-        //el-form-item(:label="field.description", :prop="field.name")
+  el-dialog(:title="formTitle", v-model="formVisible")
+    el-form(:model="form", label-width="80px", :rules="formRules", ref="form")
+      template(v-for="fields in formFields")
+        el-form-item(:label="field.description", :prop="field.name")
       
 
 </template>
