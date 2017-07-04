@@ -31,4 +31,4 @@ mix.webpackConfig({
 8. change config/auth `$config['providers']['users']['model']` value to "\\Friparia\\Admin\\Models\\User"
 9. create a superuser
 `php artisan admin:create-superuser`
-10. run npm!
+10. run `npm run dev`
