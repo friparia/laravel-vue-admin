@@ -32,3 +32,4 @@ mix.webpackConfig({
 9. create a superuser
 `php artisan admin:create-superuser`
 10. run `npm run dev`
+11. see `/admin` in your browser
